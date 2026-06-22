@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Angetic Essence — Login</title>
+<style>
+:root{--bg0:#0a0e17;--bg1:#111827;--bg2:#1a1f2e;--bd:#2a3040;--fg:#e2e8f0;--fg2:#94a3b8;--fg3:#64748b;--cy:#06b6d4;--pu:#8b5cf6;--mo:'Cascadia Code','Fira Code','JetBrains Mono','Consolas',monospace;--sn:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg0);color:var(--fg);font-family:var(--sn);min-height:100vh;display:flex;align-items:center;justify-content:center}
+.container{background:var(--bg1);border:1px solid var(--bd);border-radius:12px;padding:40px;width:380px;max-width:90vw}
+.logo{font-family:var(--mo);font-size:22px;font-weight:700;text-align:center;margin-bottom:6px;background:linear-gradient(135deg,var(--cy),var(--pu));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{text-align:center;font-size:12px;color:var(--fg3);margin-bottom:28px;font-family:var(--mo)}
+label{display:block;font-size:11px;font-weight:600;color:var(--fg2);margin-bottom:5px;text-transform:uppercase;letter-spacing:1px}
+input{width:100%;padding:10px 14px;background:var(--bg2);border:1px solid var(--bd);border-radius:6px;color:var(--fg);font-family:var(--mo);font-size:13px;outline:none;transition:border-color .15s;margin-bottom:18px}
+input:focus{border-color:var(--cy)}
+.btn{width:100%;padding:11px;border:none;border-radius:6px;font-family:var(--mo);font-size:13px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--cy),var(--pu));color:#fff;transition:opacity .15s}
+.btn:hover{opacity:0.9}
+.error{background:rgba(239,68,68,0.15);color:#ef4444;padding:8px 12px;border-radius:6px;font-size:12px;margin-bottom:16px;text-align:center}
+.hint{text-align:center;font-size:10px;color:var(--fg3);margin-top:16px;font-family:var(--mo)}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="logo">ANGETIC ESSENCE</div>
+<div class="sub">Evolution Command Center</div>
+{% if error %}
+<div class="error">{{ error }}</div>
+{% endif %}
+<form method="POST" action="/login">
+<label>Username</label>
+<input type="text" name="username" placeholder="admin" autocomplete="username" autofocus required>
+<label>Password</label>
+<input type="password" name="password" placeholder="essence2024" autocomplete="current-password" required>
+<button class="btn" type="submit">Authenticate</button>
+</form>
+<div class="hint">Default: admin / essence2024</div>
+</div>
+</body>
+</html>
