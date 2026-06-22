@@ -95,6 +95,7 @@ settings_data = {
     "adb_path": "adb",
     "sandbox_enabled": False,
     "max_daily_spend": 5.0,
+    "license_key": "",
     "chat_messages": [],
 }
 
@@ -116,6 +117,7 @@ def load_settings_from_config():
             settings_data["adb_path"] = cfg.get("adb_path", settings_data["adb_path"])
             settings_data["sandbox_enabled"] = cfg.get("sandbox", {}).get("enabled", settings_data["sandbox_enabled"])
             settings_data["max_daily_spend"] = cfg.get("cost", {}).get("max_daily_spend", 5.0)
+            settings_data["license_key"] = cfg.get("license", {}).get("key", "")
             
             # Sync keys back to environment variables so that subprocesses inherit them
             for env_key, settings_key in [
@@ -136,6 +138,19 @@ def load_settings_from_config():
             pass
 
 load_settings_from_config()
+
+
+from functools import wraps
+from core.licensing import is_licensed
+
+def license_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not is_licensed():
+            return jsonify({"error": "Pro license key required for ADB and Kali VM features. Enter your key in Settings."}), 403
+        return f(*args, **kwargs)
+    return decorated_function
+
 
 
 def tail_logs():
@@ -374,6 +389,7 @@ def stream_agent_messages():
 
 @app.route("/api/vm/start", methods=["POST"])
 @login_required
+@license_required
 def vm_start():
     ok = kali_vm.start()
     return jsonify({"status": "started" if ok else "failed"})
@@ -381,6 +397,7 @@ def vm_start():
 
 @app.route("/api/vm/stop", methods=["POST"])
 @login_required
+@license_required
 def vm_stop():
     kali_vm.stop()
     return jsonify({"status": "stopped"})
@@ -394,6 +411,7 @@ def vm_status():
 
 @app.route("/api/vm/exec", methods=["POST"])
 @login_required
+@license_required
 def vm_exec():
     data = request.get_json()
     cmd = data.get("command", "")
@@ -405,6 +423,7 @@ def vm_exec():
 
 @app.route("/api/vm/install", methods=["POST"])
 @login_required
+@license_required
 def vm_install():
     data = request.get_json()
     pkgs = data.get("packages", [])
@@ -528,6 +547,8 @@ def handle_settings():
                 cfg.setdefault("sandbox", {})["enabled"] = data["sandbox_enabled"]
             if "max_daily_spend" in data:
                 cfg.setdefault("cost", {})["max_daily_spend"] = float(data["max_daily_spend"])
+            if "license_key" in data:
+                cfg.setdefault("license", {})["key"] = data["license_key"]
             settings_path.write_text(yaml.dump(cfg))
         if any(k.endswith("_key") for k in keys_changed):
             threading.Thread(target=send_restart_signal, daemon=True).start()
@@ -570,6 +591,7 @@ def chat_tasks():
 
 @app.route("/api/adb/devices")
 @login_required
+@license_required
 def adb_devices():
     if adb is None:
         return jsonify({"error": "ADB not available"}), 503
@@ -579,6 +601,7 @@ def adb_devices():
 
 @app.route("/api/adb/info", methods=["POST"])
 @login_required
+@license_required
 def adb_info():
     data = request.get_json()
     device = data.get("device", "")
@@ -590,6 +613,7 @@ def adb_info():
 
 @app.route("/api/adb/shell", methods=["POST"])
 @login_required
+@license_required
 def adb_shell():
     data = request.get_json()
     if adb is None:
@@ -602,6 +626,7 @@ def adb_shell():
 
 @app.route("/api/adb/install", methods=["POST"])
 @login_required
+@license_required
 def adb_install():
     data = request.get_json()
     if adb is None:
@@ -612,6 +637,7 @@ def adb_install():
 
 @app.route("/api/adb/uninstall", methods=["POST"])
 @login_required
+@license_required
 def adb_uninstall():
     data = request.get_json()
     if adb is None:
@@ -622,6 +648,7 @@ def adb_uninstall():
 
 @app.route("/api/adb/root-check", methods=["GET", "POST"])
 @login_required
+@license_required
 def adb_root_check():
     if adb is None:
         return jsonify({"error": "ADB not available"}), 503
@@ -632,6 +659,7 @@ def adb_root_check():
 
 @app.route("/api/adb/root-attempt", methods=["POST"])
 @login_required
+@license_required
 def adb_root_attempt():
     if adb is None:
         return jsonify({"error": "ADB not available"}), 503
@@ -642,6 +670,7 @@ def adb_root_attempt():
 
 @app.route("/api/adb/screenshot", methods=["POST"])
 @login_required
+@license_required
 def adb_screenshot():
     if adb is None:
         return jsonify({"error": "ADB not available"}), 503

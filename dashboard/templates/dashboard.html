@@ -531,6 +531,10 @@ body{background:var(--bg0);color:var(--fg);font-family:var(--sn);min-height:100v
               <option value="true">SANDBOXED — read-only commands, files go to sandbox/ folder</option>
             </select>
           </div>
+          <div class="sg">
+            <label>Pro License Key</label>
+            <input type="text" id="setLicenseKey" placeholder="Enter your Stripe Pro key...">
+          </div>
           <div class="sg" style="justify-content:flex-end">
             <button class="btn btn-g" onclick="saveSettings()">SAVE SETTINGS</button>
           </div>
@@ -948,6 +952,7 @@ function loadSettings(){
     document.getElementById('setAdbPath').value=s.adb_path||'adb'
     document.getElementById('setMaxSpend').value=s.max_daily_spend||5.0
     document.getElementById('setSandbox').value=String(s.sandbox_enabled||false)
+    document.getElementById('setLicenseKey').value=s.license_key||''
     updateSandboxBadge(s.sandbox_enabled)
   }).catch(()=>{})
 }
@@ -963,6 +968,7 @@ async function saveSettings(){
     adb_path: document.getElementById('setAdbPath').value,
     max_daily_spend: parseFloat(document.getElementById('setMaxSpend').value || '5.0'),
     sandbox_enabled: document.getElementById('setSandbox').value === 'true',
+    license_key: document.getElementById('setLicenseKey').value.trim(),
   }
   try{
     const r=await fetch('/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})

@@ -127,46 +127,35 @@ async def async_validate(license_key: str) -> bool:
         return False
 
 
-def validate_or_exit():
+def is_licensed() -> bool:
     if os.environ.get("AE_DEV_MODE") == "true":
-        print("[DEV MODE] Bypassing license validation.")
-        return
+        return True
     config_path = Path(__file__).resolve().parent.parent / "config.yaml"
-    license_key = ""
-    if config_path.exists():
+    license_key = os.environ.get("AE_LICENSE_KEY", "")
+    if not license_key and config_path.exists():
         try:
             import yaml
-
             cfg = yaml.safe_load(config_path.read_text()) or {}
             license_key = (cfg.get("license") or {}).get("key", "")
         except Exception:
             pass
-
     if not license_key:
-        print("CRITICAL: No license key found in config.yaml")
-        sys.exit("CRITICAL: Invalid License Key.")
+        return False
+    return verify_license(license_key)
 
-    crypto_ok = verify_license(license_key)
 
-    async def _check():
-        return await async_validate(license_key)
+def validate_or_exit():
+    if os.environ.get("AE_DEV_MODE") == "true":
+        print("[DEV MODE] Bypassing license validation.")
+        return
 
-    try:
-        loop = asyncio.get_running_loop()
-        import concurrent.futures
+    if is_licensed():
+        print("[OK] License validated. Full Access Mode active.")
+    else:
+        print("*" * 60)
+        print("  ANGETIC ESSENCE — FREEMIUM MODE")
+        print("  No valid license key found in config.yaml.")
+        print("  System tools (shell execution, Kali Linux VM, ADB) are locked.")
+        print("  Standard chat and basic agent reasoning are fully enabled.")
+        print("*" * 60)
 
-        with concurrent.futures.ThreadPoolExecutor(1) as pool:
-            remote_ok = pool.submit(asyncio.run, _check()).result()
-    except RuntimeError:
-        remote_ok = asyncio.run(_check())
-    except Exception:
-        remote_ok = False
-
-    if not crypto_ok:
-        print("CRITICAL: Cryptographic license verification failed.")
-        print("  The license key is invalid or has been tampered with.")
-        sys.exit("CRITICAL: Invalid License Key.")
-
-    if not remote_ok:
-        print("WARNING: Remote license validation server unreachable.")
-        print("  Proceeding with offline cryptographic validation only.")

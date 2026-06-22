@@ -155,6 +155,13 @@ class BaseAgent:
             }
             category = TOOL_PERMISSIONS.get(tool_name)
             if category:
+                from core.licensing import is_licensed
+                if not is_licensed() and category == "shell_execution":
+                    error_msg = f"License Violation: Tool '{tool_name}' requires a Pro License Key. Standard Freemium mode locks shell execution, Kali Linux, and ADB automation."
+                    self.logger.warning(error_msg)
+                    self.memory.save_message(self.name, "assistant", error_msg)
+                    return error_msg, thought
+
                 from core.security import policy_engine
                 persona = {"developer": "Knuth", "tester": "Lovelace", "critic": "Turing"}.get(self.name, self.name)
                 policy_engine.reload()
