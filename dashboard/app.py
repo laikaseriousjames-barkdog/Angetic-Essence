@@ -43,7 +43,12 @@ from core.memory import MemoryManager
 from core.licensing import validate_or_exit
 from plugins import discover_plugins
 
-app = Flask(__name__)
+if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+    template_folder = os.path.join(sys._MEIPASS, "dashboard", "templates")
+    static_folder = os.path.join(sys._MEIPASS, "dashboard", "static")
+    app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
+else:
+    app = Flask(__name__)
 app.secret_key = os.environ.get(
     "FLASK_SECRET_KEY",
     "ae-secret-" + uuid.uuid4().hex[:16],
