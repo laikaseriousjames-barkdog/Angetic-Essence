@@ -438,9 +438,13 @@ if __name__ == "__main__":
         print()
         print("  Starting dashboard server...")
         
-        # Spawn dashboard subprocess using ourselves
+        # Spawn dashboard subprocess using ourselves, capturing output
         dashboard_proc = subprocess.Popen(
             [sys.executable, "dashboard/app.py"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
             cwd=os.getcwd()
         )
         
@@ -456,8 +460,16 @@ if __name__ == "__main__":
         print("-" * 60)
         
         try:
-            dashboard_proc.wait()
+            # Stream the stdout/stderr of the dashboard to the launcher window in real-time
+            for line in dashboard_proc.stdout:
+                print(line, end="", flush=True)
         except KeyboardInterrupt:
+            pass
+        finally:
             dashboard_proc.terminate()
             dashboard_proc.wait()
+            # If the process exited with an error, pause so the user can read the traceback
+            if dashboard_proc.returncode and dashboard_proc.returncode != -15 and dashboard_proc.returncode != 15:
+                print(f"\n[ERROR] Dashboard server exited with code {dashboard_proc.returncode}")
+                input("\nPress Enter to exit...")
         sys.exit(0)

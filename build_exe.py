@@ -58,6 +58,7 @@ PYINSTALLER_HIDDEN_IMPORTS = [
     "win32com.client",
     "pythoncom",
     "PIL",
+    "PIL.ImageGrab",
     "pyautogui",
     "requests",
     "stripe",
@@ -65,6 +66,12 @@ PYINSTALLER_HIDDEN_IMPORTS = [
     "flask_socketio",
     "eventlet",
     "engineio",
+    "werkzeug.security",
+    "cryptography.hazmat.primitives",
+    "cryptography.hazmat.primitives.asymmetric",
+    "cryptography.hazmat.backends",
+    "cryptography.hazmat.primitives.hashes",
+    "cryptography.hazmat.primitives.serialization",
 ]
 
 
