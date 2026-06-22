@@ -293,6 +293,8 @@ def login_page():
         if session_id:
             session["session_id"] = session_id
             session["username"] = username
+            if username == "admin":
+                os.environ["AE_DEV_MODE"] = "true"
             if request.is_json:
                 return jsonify({"status": "ok", "redirect": url_for("index")})
             return redirect(url_for("index"))

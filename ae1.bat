@@ -9,21 +9,31 @@ echo   Watchdog + License Server + Dashboard
 echo ============================================================
 echo.
 
+set PYTHON_CMD=py
+if exist .venv\Scripts\python.exe (
+    set PYTHON_CMD=.venv\Scripts\python.exe
+) else (
+    where python >nul 2>&1
+    if %ERRORLEVEL% eq 0 (
+        set PYTHON_CMD=python
+    )
+)
+
 echo [1/4] Checking license server keys...
 if not exist "license_server\keys\private.pem" (
-    py -c "from license_server.crypto import generate_key_pair; generate_key_pair(); print('[OK] RSA key pair generated')"
+    %PYTHON_CMD% -c "from license_server.crypto import generate_key_pair; generate_key_pair(); print('[OK] RSA key pair generated')"
 ) else (
     echo [OK] RSA key pair exists
 )
 
 echo [2/4] Starting license server (port 8080)...
-start "AE License Server" py -m license_server.app
+start "AE License Server" %PYTHON_CMD% -m license_server.app
 
 echo [3/4] Starting watchdog...
-start "AE Watchdog" py watchdog.py
+start "AE Watchdog" %PYTHON_CMD% watchdog.py
 
 echo [4/4] Starting dashboard...
-start "AE Dashboard" py dashboard\app.py
+start "AE Dashboard" %PYTHON_CMD% dashboard\app.py
 
 timeout /t 4 /nobreak >nul
 start http://127.0.0.1:5000

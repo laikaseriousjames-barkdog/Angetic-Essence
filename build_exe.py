@@ -53,6 +53,18 @@ PYINSTALLER_HIDDEN_IMPORTS = [
     "xml.etree",
     "xml.etree.ElementTree",
     "html.parser",
+    "winsound",
+    "win32com",
+    "win32com.client",
+    "pythoncom",
+    "PIL",
+    "pyautogui",
+    "requests",
+    "stripe",
+    "docker",
+    "flask_socketio",
+    "eventlet",
+    "engineio",
 ]
 
 

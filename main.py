@@ -410,6 +410,8 @@ async def main_loop():
 
 
 if __name__ == "__main__":
+    import multiprocessing
+    multiprocessing.freeze_support()
     import subprocess
     import webbrowser
     import time
