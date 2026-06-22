@@ -72,6 +72,8 @@ PYINSTALLER_HIDDEN_IMPORTS = [
     "cryptography.hazmat.backends",
     "cryptography.hazmat.primitives.hashes",
     "cryptography.hazmat.primitives.serialization",
+    "dashboard",
+    "dashboard.app",
 ]
 
 
@@ -232,6 +234,8 @@ def build_with_pyarmor():
         "--add-data",
         f"{BASE_DIR / 'dashboard' / 'templates'}{os.pathsep}dashboard/templates",
         "--add-data",
+        f"{BASE_DIR / 'dashboard' / 'static'}{os.pathsep}dashboard/static",
+        "--add-data",
         f"{BASE_DIR / 'config.yaml'}{os.pathsep}.",
     ]
     if (BASE_DIR / "logs").exists():
@@ -296,6 +300,8 @@ def build_with_pyinstaller():
         f"{BASE_DIR / 'plugins'}{os.pathsep}plugins",
         "--add-data",
         f"{BASE_DIR / 'dashboard' / 'templates'}{os.pathsep}dashboard/templates",
+        "--add-data",
+        f"{BASE_DIR / 'dashboard' / 'static'}{os.pathsep}dashboard/static",
         "--add-data",
         f"{BASE_DIR / 'config.yaml'}{os.pathsep}.",
     ]
