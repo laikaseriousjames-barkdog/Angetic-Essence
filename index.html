@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angetic Essence — Autonomous Engineering Agent</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <span class="logo">ae<span class="dim">//</span></span>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#waitlist" class="nav-cta">Join Waitlist</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <span class="badge">Closed Beta 2026</span>
+            <h1>Unleash True<br><span class="accent">Autonomous Engineering</span></h1>
+            <p>Three AI agents — Knuth, Lovelace, and Turing — collaborate in real-time, writing code, running tests, evolving their own architecture, and securing your infrastructure. No dashboard required.</p>
+            <div class="hero-actions">
+                <a href="downloads/AngeticEssence.exe" class="btn-primary" download>Download Beta for Windows (x64)</a>
+                <a href="#features" class="btn-secondary">Explore Features</a>
+            </div>
+            <div class="terminal-preview">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="terminal-title">ae@agent:~/essence</span>
+                </div>
+                <div class="terminal-body">
+                    <span class="prompt">ae@agent:~$</span> ./ae.bat<br>
+                    <span class="dim">[OK] License validated</span><br>
+                    <span class="dim">[OK] Loading genius conversation engine...</span><br>
+                    <span class="accent">[Knuth]:</span> Building feature extraction module...<br>
+                    <span class="accent">[Lovelace]:</span> Test coverage at 94% — 3 new passing<br>
+                    <span class="accent">[Turing]:</span> Code quality A — no regressions detected<br>
+                    <span class="prompt">ae@agent:~$</span> _
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="section-header">
+            <h2>Built for <span class="accent">Engineering Autonomy</span></h2>
+            <p>Three specialized agents, one unified purpose — building and evolving production software without human intervention.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">&#8203;</div>
+                <h3>Async Agent Concurrency</h3>
+                <p>Knuth, Lovelace, and Turing reason simultaneously via <code>asyncio.gather</code>. Each agent fetches live news, builds features, runs tests, and critiques code in parallel — no deadlocks, no waiting.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#8203;</div>
+                <h3>Self-Healing VM</h3>
+                <p>The Kali Linux VM auto-detects failures, attempts WSL restart, installs missing tools, and falls back to Docker. Turing monitors health and triggers recovery — all without operator input.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#8203;</div>
+                <h3>Self-Evolution Pipeline</h3>
+                <p>Agents write their own improvements to <code>core/</code>, <code>agents/</code>, and the dashboard. Each evolution cycle runs in an isolated UUID-stamped staging directory, verified by pytest before merging.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#8203;</div>
+                <h3>Plugin Marketplace</h3>
+                <p>Extend the platform with custom <code>PluginAgent</code> subclasses. Auto-discovered, hot-loaded, and fully integrated into the reasoning loop. Sell your plugins via RSA-signed licenses.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#8203;</div>
+                <h3>Cost Governance</h3>
+                <p>Per-provider token tracking writes to an auditable <code>spend_log</code>. Agents automatically pause when daily spend exceeds the configured limit. No surprise bills from runaway agents.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#8203;</div>
+                <h3>Cryptographic Licensing</h3>
+                <p>RSA-2048 signed licenses verified at startup and via periodic HTTP validation. Stripe webhooks deliver keys instantly. Revocation, tier enforcement, and audit logging built in.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+        <div class="section-header">
+            <h2>Simple, <span class="accent">Transparent Pricing</span></h2>
+            <p>One-time perpetual license for self-hosters. Monthly subscription for teams who want ongoing updates and support.</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Perpetual</h3>
+                <div class="price">$499</div>
+                <div class="price-note">one-time</div>
+                <ul>
+                    <li>Full agent trio (Knuth, Lovelace, Turing)</li>
+                    <li>Kali Linux VM integration</li>
+                    <li>Self-evolution pipeline</li>
+                    <li>Plugin marketplace access</li>
+                    <li>Dashboard + REST API</li>
+                    <li>Lifetime license key</li>
+                </ul>
+                <a href="downloads/AngeticEssence.exe" class="btn-primary" download>Download Beta</a>
+            </div>
+            <div class="pricing-card featured">
+                <div class="featured-badge">Popular</div>
+                <h3>Commercial</h3>
+                <div class="price">$49</div>
+                <div class="price-note">per month</div>
+                <ul>
+                    <li>Everything in Perpetual</li>
+                    <li>Priority plugin updates</li>
+                    <li>Email + Slack support</li>
+                    <li>Quarterly architecture reviews</li>
+                    <li>Early access to new agents</li>
+                    <li>Cancel anytime</li>
+                </ul>
+                <a href="downloads/AngeticEssence.exe" class="btn-primary" download>Download Beta</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="waitlist" id="waitlist">
+        <div class="section-header">
+            <h2>Join the <span class="accent">Waitlist</span></h2>
+            <p>Closed beta begins Q3 2026. We'll notify you when your slot is ready.</p>
+        </div>
+        <form class="waitlist-form" action="mailto:hello@angeticessence.com?subject=Angetic%20Essence%20Beta%20Waitlist" method="post" enctype="text/plain">
+            <input type="email" name="email" placeholder="your@email.com" required>
+            <button type="submit" class="btn-primary">Get Early Access</button>
+        </form>
+        <p class="waitlist-note">No spam. No commitment. We'll send one email when the beta opens.</p>
+    </section>
+
+    <footer>
+        <div class="footer-inner">
+            <span class="logo">angetic <span class="dim">essence</span></span>
+            <div class="footer-links">
+                <a href="docs/EULA.md">EULA</a>
+                <a href="mailto:hello@angeticessence.com?subject=Angetic%20Essence%20Beta%20Waitlist">Contact</a>
+            </div>
+            <span class="dim">&copy; 2026 Angetic Essence. All rights reserved.</span>
+        </div>
+    </footer>
+</body>
+</html>
