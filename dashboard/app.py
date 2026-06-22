@@ -275,7 +275,8 @@ def start_agents_internal():
         if not getattr(sys, "frozen", False):
             target_args.append(str(BASE_DIR / "main.py"))
         else:
-            target_args.append("main.py")
+            target_args.append("--agent-engine")
+
         agent_process = subprocess.Popen(
             target_args,
             stdout=subprocess.PIPE,

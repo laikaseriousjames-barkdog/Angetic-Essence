@@ -415,61 +415,95 @@ if __name__ == "__main__":
     import subprocess
     import webbrowser
     import time
-    
-    # 1. Check if run as dashboard
-    if len(sys.argv) > 1 and "app.py" in sys.argv[1]:
-        from dashboard.app import app, ensure_default_admin
+    import threading
+
+    # ----------------------------------------------------------------
+    # MODE 1: This process was spawned as the dashboard server worker
+    # Usage: AngeticEssence.exe --dashboard-server
+    # ----------------------------------------------------------------
+    if "--dashboard-server" in sys.argv:
+        from dashboard.app import app, ensure_default_admin, tail_logs, validate_or_exit, LOG_DIR, DATA_DIR
+        validate_or_exit()
+        LOG_DIR.mkdir(exist_ok=True)
+        DATA_DIR.mkdir(exist_ok=True)
         ensure_default_admin()
-        Path("logs").mkdir(exist_ok=True)
-        Path("data").mkdir(exist_ok=True)
+        threading.Thread(target=tail_logs, daemon=True).start()
         app.run(host="127.0.0.1", port=5000, debug=False, threaded=True)
         sys.exit(0)
-        
-    # 2. Check if run as agent engine (spawned by dashboard)
-    elif len(sys.argv) > 1 and "main.py" in sys.argv[1]:
+
+    # ----------------------------------------------------------------
+    # MODE 2: This process was spawned as the background agent engine
+    # Usage: AngeticEssence.exe --agent-engine
+    # ----------------------------------------------------------------
+    elif "--agent-engine" in sys.argv:
         asyncio.run(main_loop())
         sys.exit(0)
-        
-    # 3. Else, user double-clicked the executable directly
+
+    # ----------------------------------------------------------------
+    # MODE 3: User double-clicked / launched directly — be the launcher
+    # ----------------------------------------------------------------
     else:
         print("=" * 60)
         print("  ANGETIC ESSENCE — Command Center Launcher")
         print("=" * 60)
         print()
         print("  Starting dashboard server...")
-        
-        # Spawn dashboard subprocess using ourselves, capturing output
+
+        # Determine the working directory (next to the exe when frozen,
+        # or the source root when running from Python source).
+        if getattr(sys, "frozen", False):
+            cwd = str(Path(sys.executable).parent)
+        else:
+            cwd = str(Path(__file__).resolve().parent)
+
+        # Spawn *ourselves* with --dashboard-server so the frozen import
+        # path is identical to this process — no external script needed.
         dashboard_proc = subprocess.Popen(
-            [sys.executable, "dashboard/app.py"],
+            [sys.executable, "--dashboard-server"],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
             bufsize=1,
-            cwd=os.getcwd()
+            cwd=cwd,
         )
-        
+
+        # Give Flask a moment to bind the port before opening the browser.
         print("  Waiting for server to come online...")
-        time.sleep(2)
-        
+        deadline = time.time() + 15
+        import socket
+        while time.time() < deadline:
+            time.sleep(0.25)
+            try:
+                with socket.create_connection(("127.0.0.1", 5000), timeout=0.5):
+                    break
+            except OSError:
+                pass
+            # If the process already died, stop waiting early
+            if dashboard_proc.poll() is not None:
+                break
+
         url = "http://127.0.0.1:5000"
         print(f"  Opening browser to {url}")
         webbrowser.open(url)
-        
+
         print()
         print("  Dashboard is running. Close this window to stop.")
         print("-" * 60)
-        
+
         try:
-            # Stream the stdout/stderr of the dashboard to the launcher window in real-time
+            # Stream dashboard stdout/stderr live so crash messages are visible.
             for line in dashboard_proc.stdout:
                 print(line, end="", flush=True)
         except KeyboardInterrupt:
             pass
         finally:
             dashboard_proc.terminate()
-            dashboard_proc.wait()
-            # If the process exited with an error, pause so the user can read the traceback
-            if dashboard_proc.returncode and dashboard_proc.returncode != -15 and dashboard_proc.returncode != 15:
-                print(f"\n[ERROR] Dashboard server exited with code {dashboard_proc.returncode}")
+            try:
+                dashboard_proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                dashboard_proc.kill()
+            rc = dashboard_proc.returncode
+            if rc and rc not in (-15, 15):
+                print(f"\n[ERROR] Dashboard server exited with code {rc}")
                 input("\nPress Enter to exit...")
         sys.exit(0)
