@@ -3,148 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Angetic Essence — Autonomous Engineering Agent</title>
+    <title>Angetic Essence — Local Autonomous AI Agent Cyberdeck</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav>
         <div class="nav-inner">
-            <span class="logo">ae<span class="dim">//</span></span>
+            <span class="logo">angetic_essence<span class="dim">//</span></span>
             <div class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#waitlist" class="nav-cta">Join Waitlist</a>
+                <a href="#features">Capabilities</a>
+                <a href="#demo">Demo</a>
+                <a href="#pricing" class="nav-cta">Get Started</a>
             </div>
         </div>
     </nav>
 
-    <section class="hero" id="hero">
+    <header class="hero">
         <div class="hero-bg"></div>
         <div class="hero-content">
-            <span class="badge">Closed Beta 2026</span>
-            <h1>Unleash True<br><span class="accent">Autonomous Engineering</span></h1>
-            <p>Three AI agents — Knuth, Lovelace, and Turing — collaborate in real-time, writing code, running tests, evolving their own architecture, and securing your infrastructure. No dashboard required.</p>
+            <span class="badge">V1.0.0 — Sandboxed Local Release</span>
+            <h1>Local AI Agents with<br><span class="accent">Real OS Capabilities</span></h1>
+            <p class="hero-sub">Angetic Essence is a local multi-agent orchestration console built for system engineers, security auditors, and QA automators. Three autonomous agents collaborate locally to build software, run network diagnostics, and manage Android devices without cloud dependencies.</p>
             <div class="hero-actions">
-                <a href="downloads/AngeticEssence.exe" class="btn-primary" download>Download Beta for Windows (x64)</a>
-                <a href="#features" class="btn-secondary">Explore Features</a>
+                <a href="downloads/AngeticEssence.exe" class="btn-primary" download>Download Basic (Free)</a>
+                <a href="#pricing" class="btn-secondary">Go Pro ($29.99)</a>
             </div>
-            <div class="terminal-preview">
-                <div class="terminal-header">
+        </div>
+    </header>
+
+    <section class="demo-section" id="demo">
+        <div class="section-header">
+            <h2>See the Agents <span class="accent">Execute in Real-Time</span></h2>
+            <p>Watch Knuth, Lovelace, and Turing run network audits, write unit tests, and interact with operating systems directly inside their local workspace.</p>
+        </div>
+        <div class="hardware-frame">
+            <div class="screen-header">
+                <div class="window-controls">
                     <span class="dot red"></span>
                     <span class="dot yellow"></span>
                     <span class="dot green"></span>
-                    <span class="terminal-title">ae@agent:~/essence</span>
                 </div>
-                <div class="terminal-body">
-                    <span class="prompt">ae@agent:~$</span> ./ae.bat<br>
-                    <span class="dim">[OK] License validated</span><br>
-                    <span class="dim">[OK] Loading genius conversation engine...</span><br>
-                    <span class="accent">[Knuth]:</span> Building feature extraction module...<br>
-                    <span class="accent">[Lovelace]:</span> Test coverage at 94% — 3 new passing<br>
-                    <span class="accent">[Turing]:</span> Code quality A — no regressions detected<br>
-                    <span class="prompt">ae@agent:~$</span> _
-                </div>
+                <span class="window-title">Angetic Essence — Kali & ADB Orchestration Pipeline</span>
+            </div>
+            <div class="screen-body">
+                <video autoplay loop muted playsinline class="demo-video">
+                    <source src="assets/demo.mp4" type="video/mp4">
+                    <!-- Text fallback representing terminal output in case video asset is not present -->
+                    <pre class="terminal-fallback">
+[Knuth] Initializing news-based developer intelligence loop...
+[Lovelace] Verification suites booted: pytest-coverage ready.
+[Turing] Analyzing Kali Linux WSL VM health: Status OK.
+[SYSTEM] Ready for tasks. Enter target command.
+$ /api/adb/devices -> Listing ADB nodes. Found device [emulator-5554]
+$ /api/vm/exec "nmap -sV -F 192.168.1.1" -> Triggering network audit tool...
+                    </pre>
+                </video>
             </div>
         </div>
     </section>
 
-    <section class="features" id="features">
-        <div class="section-header">
-            <h2>Built for <span class="accent">Engineering Autonomy</span></h2>
-            <p>Three specialized agents, one unified purpose — building and evolving production software without human intervention.</p>
-        </div>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">&#8203;</div>
-                <h3>Async Agent Concurrency</h3>
-                <p>Knuth, Lovelace, and Turing reason simultaneously via <code>asyncio.gather</code>. Each agent fetches live news, builds features, runs tests, and critiques code in parallel — no deadlocks, no waiting.</p>
+    <section class="value-props" id="features">
+        <div class="props-grid">
+            <div class="prop-card">
+                <div class="prop-icon">⚔️</div>
+                <h3>Automated Network Audits</h3>
+                <p>Equip Turing and Knuth with a fully functioning **Kali Linux VM** bridge. The agents can automatically execute port scans, search for vulnerabilities, analyze system logs, and run diagnostics locally, warning you instantly about security defects.</p>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">&#8203;</div>
-                <h3>Self-Healing VM</h3>
-                <p>The Kali Linux VM auto-detects failures, attempts WSL restart, installs missing tools, and falls back to Docker. Turing monitors health and triggers recovery — all without operator input.</p>
+            <div class="prop-card">
+                <div class="prop-icon">📱</div>
+                <h3>Android ADB Mobile QA</h3>
+                <p>Automate mobile application validation. The Android Debug Bridge integration enables agents to install APKs from host URLs, check for root availability, click elements on-screen, and capture screenshots for visual layout verification.</p>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">&#8203;</div>
-                <h3>Self-Evolution Pipeline</h3>
-                <p>Agents write their own improvements to <code>core/</code>, <code>agents/</code>, and the dashboard. Each evolution cycle runs in an isolated UUID-stamped staging directory, verified by pytest before merging.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">&#8203;</div>
-                <h3>Plugin Marketplace</h3>
-                <p>Extend the platform with custom <code>PluginAgent</code> subclasses. Auto-discovered, hot-loaded, and fully integrated into the reasoning loop. Sell your plugins via RSA-signed licenses.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">&#8203;</div>
-                <h3>Cost Governance</h3>
-                <p>Per-provider token tracking writes to an auditable <code>spend_log</code>. Agents automatically pause when daily spend exceeds the configured limit. No surprise bills from runaway agents.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">&#8203;</div>
-                <h3>Cryptographic Licensing</h3>
-                <p>RSA-2048 signed licenses verified at startup and via periodic HTTP validation. Stripe webhooks deliver keys instantly. Revocation, tier enforcement, and audit logging built in.</p>
+            <div class="prop-card">
+                <div class="prop-icon">🛡️</div>
+                <h3>100% Offline Privacy</h3>
+                <p>Run completely local with Hugging Face, GGUF, or local LLM server models. Your system terminal logs, security findings, and codebase NEVER leave your machine. Built for strictly confidential audits.</p>
             </div>
         </div>
     </section>
 
     <section class="pricing" id="pricing">
         <div class="section-header">
-            <h2>Simple, <span class="accent">Transparent Pricing</span></h2>
-            <p>One-time perpetual license for self-hosters. Monthly subscription for teams who want ongoing updates and support.</p>
+            <h2>Select Your <span class="accent">Execution Environment</span></h2>
+            <p>Start with the free basic agent orchestrator or unlock deep kernel shell capabilities and mobile bridges.</p>
         </div>
         <div class="pricing-grid">
+            <!-- Basic Tier -->
             <div class="pricing-card">
-                <h3>Perpetual</h3>
-                <div class="price">$499</div>
-                <div class="price-note">one-time</div>
+                <h3>Basic Mode</h3>
+                <div class="price">$0</div>
+                <div class="price-note">Free download</div>
+                <p class="card-desc">Standard multi-agent reasoning, local file read/write operations, and basic terminal conversation.</p>
                 <ul>
-                    <li>Full agent trio (Knuth, Lovelace, Turing)</li>
-                    <li>Kali Linux VM integration</li>
-                    <li>Self-evolution pipeline</li>
-                    <li>Plugin marketplace access</li>
-                    <li>Dashboard + REST API</li>
-                    <li>Lifetime license key</li>
+                    <li>Donald Knuth (Developer Agent)</li>
+                    <li>Ada Lovelace (Tester Agent)</li>
+                    <li>Alan Turing (Critic/Research Agent)</li>
+                    <li>Dynamic cost and token spending limit checks</li>
+                    <li>Local file creation and modification</li>
                 </ul>
-                <a href="downloads/AngeticEssence.exe" class="btn-primary" download>Download Beta</a>
+                <a href="downloads/AngeticEssence.exe" class="btn-secondary" download>Download Free Version</a>
             </div>
+            <!-- Pro Tier -->
             <div class="pricing-card featured">
-                <div class="featured-badge">Popular</div>
-                <h3>Commercial</h3>
-                <div class="price">$49</div>
-                <div class="price-note">per month</div>
+                <div class="featured-badge">Highly Recommended</div>
+                <h3>Pro Access</h3>
+                <div class="price">$29.99</div>
+                <div class="price-note">One-time payment</div>
+                <p class="card-desc">Unlock all hardware integrations, operating system control bridges, and pentest automation modules.</p>
                 <ul>
-                    <li>Everything in Perpetual</li>
-                    <li>Priority plugin updates</li>
-                    <li>Email + Slack support</li>
-                    <li>Quarterly architecture reviews</li>
-                    <li>Early access to new agents</li>
-                    <li>Cancel anytime</li>
+                    <li><strong>Everything in Basic Mode</strong></li>
+                    <li><strong>Kali Linux WSL VM Integration</strong></li>
+                    <li><strong>Android Debug Bridge (ADB) Controller</strong></li>
+                    <li><strong>Automated APK downloads & installations</strong></li>
+                    <li><strong>System shell command executions</strong></li>
+                    <li>Priority access to future agent plugins</li>
                 </ul>
-                <a href="downloads/AngeticEssence.exe" class="btn-primary" download>Download Beta</a>
+                <a href="https://checkout.stripe.com/pay/mock_angetic_pro_2999" class="btn-primary">Unlock Pro Access</a>
             </div>
         </div>
-    </section>
-
-    <section class="waitlist" id="waitlist">
-        <div class="section-header">
-            <h2>Join the <span class="accent">Waitlist</span></h2>
-            <p>Closed beta begins Q3 2026. We'll notify you when your slot is ready.</p>
-        </div>
-        <form class="waitlist-form" action="mailto:hello@angeticessence.com?subject=Angetic%20Essence%20Beta%20Waitlist" method="post" enctype="text/plain">
-            <input type="email" name="email" placeholder="your@email.com" required>
-            <button type="submit" class="btn-primary">Get Early Access</button>
-        </form>
-        <p class="waitlist-note">No spam. No commitment. We'll send one email when the beta opens.</p>
     </section>
 
     <footer>
         <div class="footer-inner">
-            <span class="logo">angetic <span class="dim">essence</span></span>
+            <span class="logo">angetic_essence<span class="dim">//</span></span>
             <div class="footer-links">
                 <a href="docs/EULA.md">EULA</a>
-                <a href="mailto:hello@angeticessence.com?subject=Angetic%20Essence%20Beta%20Waitlist">Contact</a>
+                <a href="mailto:dev@angeticessence.com">Contact Support</a>
             </div>
             <span class="dim">&copy; 2026 Angetic Essence. All rights reserved.</span>
         </div>
