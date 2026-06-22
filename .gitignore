@@ -29,7 +29,7 @@ MANIFEST
 # PyInstaller
 #  Usually these files are written by a python script, you may want to exclude them
 *.manifest
-*.spec
+# NOTE: AngeticEssence.spec is intentionally tracked for reproducible builds
 
 # Installer logs
 pip-log.txt
