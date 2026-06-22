@@ -9,7 +9,11 @@ import yaml
 from pathlib import Path
 from typing import Dict, Any, Optional
 
-CONFIG_PATH = Path(__file__).parent.parent / "config.yaml"
+import sys
+if getattr(sys, "frozen", False):
+    CONFIG_PATH = Path(sys.executable).parent.resolve() / "config.yaml"
+else:
+    CONFIG_PATH = Path(__file__).parent.parent / "config.yaml"
 
 class SecurityPolicy:
     def __init__(self):

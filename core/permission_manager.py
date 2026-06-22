@@ -15,7 +15,12 @@ class PermissionManager:
     def __init__(self):
         if self._initialized:
             return
-        self.config_path = Path(__file__).parent.parent / "config.yaml"
+        import sys
+        if getattr(sys, "frozen", False):
+            base_dir = Path(sys.executable).parent.resolve()
+        else:
+            base_dir = Path(__file__).parent.parent
+        self.config_path = base_dir / "config.yaml"
         self.permissions: Dict[str, Any] = {}
         self.sandbox_mode = False
         self.load_config()

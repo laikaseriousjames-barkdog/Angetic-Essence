@@ -18,7 +18,10 @@ from flask import (
     url_for,
 )
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+if getattr(sys, "frozen", False):
+    BASE_DIR = Path(sys.executable).parent.resolve()
+else:
+    BASE_DIR = Path(__file__).resolve().parent.parent
 LOG_DIR = BASE_DIR / "logs"
 DATA_DIR = BASE_DIR / "data"
 AUDIO_STATE_FILE = DATA_DIR / "conversation_audio.json"
@@ -263,8 +266,13 @@ def start_agents_internal():
         for env_key, setting_key in key_map.items():
             if settings_data.get(setting_key):
                 env[env_key] = settings_data[setting_key]
+        target_args = [sys.executable]
+        if not getattr(sys, "frozen", False):
+            target_args.append(str(BASE_DIR / "main.py"))
+        else:
+            target_args.append("main.py")
         agent_process = subprocess.Popen(
-            [sys.executable, str(BASE_DIR / "main.py")],
+            target_args,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,

@@ -31,7 +31,11 @@ class RateLimiter:
 class MemoryManager:
     def __init__(self, db_path=None):
         if db_path is None:
-            db_path = Path(__file__).resolve().parent.parent / "essence_state.db"
+            import sys
+            if getattr(sys, "frozen", False):
+                db_path = Path(sys.executable).parent.resolve() / "essence_state.db"
+            else:
+                db_path = Path(__file__).resolve().parent.parent / "essence_state.db"
         self.db_path = Path(db_path)
         self.conn = sqlite3.connect(str(self.db_path), check_same_thread=False)
         self.rate_limiter = RateLimiter()

@@ -14,7 +14,11 @@ try:
 except ImportError:
     HAS_WERKZEUG = False
 
-AUTH_CONFIG_PATH = Path(__file__).resolve().parent.parent / "data" / "auth.json"
+import sys
+if getattr(sys, "frozen", False):
+    AUTH_CONFIG_PATH = Path(sys.executable).parent.resolve() / "data" / "auth.json"
+else:
+    AUTH_CONFIG_PATH = Path(__file__).resolve().parent.parent / "data" / "auth.json"
 
 
 def _load_auth_config() -> dict:

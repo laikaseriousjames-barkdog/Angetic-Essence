@@ -29,7 +29,11 @@ class BaseAgent:
         self.config = config
         self.logger = setup_logger(name)
         self.llm = llm or LLMClient(config=config.get("llm", {}), memory=self.memory)
-        self.work_dir = Path(__file__).resolve().parent.parent
+        import sys
+        if getattr(sys, "frozen", False):
+            self.work_dir = Path(sys.executable).parent.resolve()
+        else:
+            self.work_dir = Path(__file__).resolve().parent.parent
         self.kali = kali
         sb_enabled = config.get("sandbox", {}).get("enabled", False)
         self.toolkit = ToolKit(self.work_dir, Sandbox(enabled=sb_enabled), kali=kali, config=config)

@@ -9,7 +9,11 @@ import asyncio
 from pathlib import Path
 from datetime import datetime
 
-AUDIO_STATE_FILE = Path(__file__).parent / "data" / "conversation_audio.json"
+if getattr(sys, "frozen", False):
+    BASE_DIR = Path(sys.executable).parent.resolve()
+else:
+    BASE_DIR = Path(__file__).resolve().parent
+AUDIO_STATE_FILE = BASE_DIR / "data" / "conversation_audio.json"
 
 AGENT_MESSAGE_QUEUE = []
 
@@ -28,7 +32,7 @@ def broadcast_agent_message(agent: str, text: str):
     msg = {"agent": agent, "text": text}
     AGENT_MESSAGE_QUEUE.append(msg)
     AGENT_MESSAGE_QUEUE = AGENT_MESSAGE_QUEUE[-100:]
-    log_path = Path(__file__).parent / "logs" / "agent_messages.jsonl"
+    log_path = BASE_DIR / "logs" / "agent_messages.jsonl"
     log_path.parent.mkdir(exist_ok=True)
     with open(log_path, "a", encoding="utf-8") as f:
         f.write(json.dumps(msg, ensure_ascii=False) + "\n")
@@ -89,7 +93,7 @@ PERSONALITIES = {
 
 
 def load_config() -> dict:
-    config_path = Path(__file__).parent / "config.yaml"
+    config_path = BASE_DIR / "config.yaml"
     cfg = {}
     if config_path.exists():
         with open(config_path) as f:
@@ -406,4 +410,52 @@ async def main_loop():
 
 
 if __name__ == "__main__":
-    asyncio.run(main_loop())
+    import subprocess
+    import webbrowser
+    import time
+    
+    # 1. Check if run as dashboard
+    if len(sys.argv) > 1 and "app.py" in sys.argv[1]:
+        from dashboard.app import app, ensure_default_admin
+        ensure_default_admin()
+        Path("logs").mkdir(exist_ok=True)
+        Path("data").mkdir(exist_ok=True)
+        app.run(host="127.0.0.1", port=5000, debug=False, threaded=True)
+        sys.exit(0)
+        
+    # 2. Check if run as agent engine (spawned by dashboard)
+    elif len(sys.argv) > 1 and "main.py" in sys.argv[1]:
+        asyncio.run(main_loop())
+        sys.exit(0)
+        
+    # 3. Else, user double-clicked the executable directly
+    else:
+        print("=" * 60)
+        print("  ANGETIC ESSENCE — Command Center Launcher")
+        print("=" * 60)
+        print()
+        print("  Starting dashboard server...")
+        
+        # Spawn dashboard subprocess using ourselves
+        dashboard_proc = subprocess.Popen(
+            [sys.executable, "dashboard/app.py"],
+            cwd=os.getcwd()
+        )
+        
+        print("  Waiting for server to come online...")
+        time.sleep(2)
+        
+        url = "http://127.0.0.1:5000"
+        print(f"  Opening browser to {url}")
+        webbrowser.open(url)
+        
+        print()
+        print("  Dashboard is running. Close this window to stop.")
+        print("-" * 60)
+        
+        try:
+            dashboard_proc.wait()
+        except KeyboardInterrupt:
+            dashboard_proc.terminate()
+            dashboard_proc.wait()
+        sys.exit(0)
