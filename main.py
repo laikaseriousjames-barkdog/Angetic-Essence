@@ -7,7 +7,7 @@ import yaml
 import random
 import asyncio
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 
 if getattr(sys, "frozen", False):
     BASE_DIR = Path(sys.executable).parent.resolve()
@@ -72,7 +72,7 @@ NEWS_SOURCES = {
         ("Reddit Science", "https://www.reddit.com/r/science/hot.json?limit=5"),
         (
             "Wikipedia Featured",
-            f"https://en.wikipedia.org/api/rest_v1/feed/featured/{datetime.utcnow().strftime('%Y/%m/%d')}",
+            f"https://en.wikipedia.org/api/rest_v1/feed/featured/{datetime.now(timezone.utc).strftime('%Y/%m/%d')}",
         ),
     ],
     "Turing": [
@@ -179,7 +179,7 @@ async def load_news_async(llm, toolkit) -> dict:
 
 
 async def agent_worker(agent, task_description: str, memory: MemoryManager, cycle: int):
-    from core.audit import audit
+    from core.audit_logger import audit
     from core.system_tracing import TraceContext
 
     speaker_name = {"developer": "Knuth", "tester": "Lovelace", "critic": "Turing"}.get(
@@ -398,9 +398,9 @@ async def main_loop():
         else:
             logger.debug("VM health check passed")
 
-        print(f"\n  {'─' * 50}")
+        safe_print(f"\n  {'─' * 50}")
         wait_seconds = 2
-        print(f"  Next reasoning cycle in {wait_seconds} seconds.")
+        safe_print(f"  Next reasoning cycle in {wait_seconds} seconds.")
         logger.info(f"Cycle {cycle} complete. Next in {wait_seconds}s.")
         try:
             await asyncio.sleep(wait_seconds)
