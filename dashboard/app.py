@@ -292,7 +292,7 @@ def start_agents_internal():
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
     if request.method == "POST":
-        data = request.get_json() or request.form
+        data = request.get_json(silent=True) or request.form
         username = data.get("username", "").strip()
         password = data.get("password", "").strip()
         session_id = authenticate(username, password)
