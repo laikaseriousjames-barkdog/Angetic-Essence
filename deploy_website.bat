@@ -9,8 +9,8 @@ echo.
 
 :: ── Config ──
 :: Change these to match your GitHub username and repo name
-set GITHUB_USER=your-username
-set REPO_NAME=angetic-essence
+set GITHUB_USER=laikaseriousjames-barkdog
+set REPO_NAME=Angetic-Essence
 set BRANCH=gh-pages
 
 echo [!] Before running, create an empty repo on GitHub:

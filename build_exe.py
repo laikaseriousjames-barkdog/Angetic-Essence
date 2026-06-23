@@ -332,7 +332,7 @@ def build():
     print("=" * 60)
     print("  ANGETIC ESSENCE — HARDENED BUILD SYSTEM")
     print("=" * 60)
-    build_with_pyarmor()
+    build_with_pyinstaller()
 
 
 if __name__ == "__main__":

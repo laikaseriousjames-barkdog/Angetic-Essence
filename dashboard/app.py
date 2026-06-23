@@ -362,10 +362,14 @@ def login_page():
             session["username"] = username
             if username == "admin":
                 os.environ["AE_DEV_MODE"] = "true"
-            if request.is_json:
+            # Always redirect — the FormToJsonMiddleware converts form POSTs to
+            # JSON internally, so request.is_json is always True for browser
+            # form submissions.  Only return JSON if the caller explicitly asked
+            # for it via the Accept header (programmatic API clients).
+            if request.accept_mimetypes.best == "application/json":
                 return jsonify({"status": "ok", "redirect": url_for("index")})
             return redirect(url_for("index"))
-        if request.is_json:
+        if request.accept_mimetypes.best == "application/json":
             return jsonify({"error": "Invalid credentials"}), 401
         return render_template("login.html", error="Invalid credentials")
     return render_template("login.html")
