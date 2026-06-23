@@ -423,13 +423,19 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------
     if "--dashboard-server" in sys.argv:
         from dashboard.app import app, ensure_default_admin, tail_logs, validate_or_exit, LOG_DIR, DATA_DIR
+        from dashboard.app import FormToJsonMiddleware
         validate_or_exit()
         LOG_DIR.mkdir(exist_ok=True)
         DATA_DIR.mkdir(exist_ok=True)
         ensure_default_admin()
         threading.Thread(target=tail_logs, daemon=True).start()
-        app.run(host="127.0.0.1", port=5000, debug=False, threaded=True)
+        # Wrap the ENTIRE Flask app so the middleware intercepts requests at the
+        # outermost WSGI layer — before Flask/Werkzeug parses Content-Type at all.
+        wsgi_app = FormToJsonMiddleware(app)
+        from werkzeug.serving import run_simple
+        run_simple("127.0.0.1", 5000, wsgi_app, threaded=True, use_reloader=False)
         sys.exit(0)
+
 
     # ----------------------------------------------------------------
     # MODE 2: This process was spawned as the background agent engine

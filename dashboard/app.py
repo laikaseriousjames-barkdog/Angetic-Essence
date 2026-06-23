@@ -49,10 +49,71 @@ if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
     app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
 else:
     app = Flask(__name__)
-app.secret_key = os.environ.get(
-    "FLASK_SECRET_KEY",
-    "ae-secret-" + uuid.uuid4().hex[:16],
-)
+
+
+class FormToJsonMiddleware:
+    """WSGI middleware that converts form-encoded POST bodies to JSON.
+
+    Flask 3.x / Werkzeug 3.x raises 415 Unsupported Media Type for any
+    POST request whose Content-Type is not application/json, even before
+    the route handler runs.  This middleware intercepts those requests at
+    the raw WSGI level — below Flask entirely — and re-encodes them as
+    JSON so that every route handler receives a well-formed JSON body.
+
+    Only application/x-www-form-urlencoded is converted; multipart/form-data
+    (file uploads) is left untouched.
+    """
+
+    def __init__(self, wsgi_app):
+        self._app = wsgi_app
+
+    def __call__(self, environ, start_response):
+        ctype = environ.get("CONTENT_TYPE", "")
+        if (
+            environ.get("REQUEST_METHOD") == "POST"
+            and "application/x-www-form-urlencoded" in ctype
+        ):
+            import io, json as _json
+            from urllib.parse import parse_qs
+
+            length = int(environ.get("CONTENT_LENGTH", 0) or 0)
+            raw = environ["wsgi.input"].read(length)
+            parsed = parse_qs(raw.decode("utf-8", errors="replace"), keep_blank_values=True)
+            flat = {k: v[0] if len(v) == 1 else v for k, v in parsed.items()}
+            json_bytes = _json.dumps(flat).encode("utf-8")
+            environ["CONTENT_TYPE"] = "application/json"
+            environ["CONTENT_LENGTH"] = str(len(json_bytes))
+            environ["wsgi.input"] = io.BytesIO(json_bytes)
+
+        return self._app(environ, start_response)
+
+
+# Wrap the WSGI app — this runs below Flask so it can never raise 415
+app.wsgi_app = FormToJsonMiddleware(app.wsgi_app)
+
+
+def _get_or_create_secret_key() -> str:
+    env_key = os.environ.get("FLASK_SECRET_KEY")
+    if env_key:
+        return env_key
+    # Persist the key so sessions survive server restarts
+    _key_path = Path(__file__).resolve().parent.parent / "data" / "secret.key"
+    if getattr(sys, "frozen", False):
+        _key_path = Path(sys.executable).parent.resolve() / "data" / "secret.key"
+    _key_path.parent.mkdir(exist_ok=True)
+    if _key_path.exists():
+        try:
+            stored = _key_path.read_text().strip()
+            if len(stored) >= 32:
+                return stored
+        except Exception:
+            pass
+    new_key = "ae-secret-" + uuid.uuid4().hex + uuid.uuid4().hex
+    _key_path.write_text(new_key)
+    return new_key
+
+app.secret_key = _get_or_create_secret_key()
+
 
 agent_process: subprocess.Popen | None = None
 process_lock = threading.Lock()
@@ -292,7 +353,7 @@ def start_agents_internal():
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
     if request.method == "POST":
-        data = request.get_json(silent=True) or request.form
+        data = request.get_json(silent=True) or {}
         username = data.get("username", "").strip()
         password = data.get("password", "").strip()
         session_id = authenticate(username, password)
@@ -308,6 +369,7 @@ def login_page():
             return jsonify({"error": "Invalid credentials"}), 401
         return render_template("login.html", error="Invalid credentials")
     return render_template("login.html")
+
 
 
 @app.route("/logout")
@@ -429,7 +491,7 @@ def vm_status():
 @login_required
 @license_required
 def vm_exec():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     cmd = data.get("command", "")
     if not cmd:
         return jsonify({"error": "No command"}), 400
@@ -441,7 +503,7 @@ def vm_exec():
 @login_required
 @license_required
 def vm_install():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     pkgs = data.get("packages", [])
     if not pkgs:
         return jsonify({"error": "No packages"}), 400
@@ -472,7 +534,7 @@ def get_evolution():
 @app.route("/api/evolution/create-tool", methods=["POST"])
 @login_required
 def evolution_create_tool():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     name = data.get("name", "unnamed")
     desc = data.get("description", "")
     code = data.get("code", "")
@@ -488,7 +550,7 @@ def evolution_create_tool():
 @app.route("/api/evolution/modify-gui", methods=["POST"])
 @login_required
 def evolution_modify_gui():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     ok = evolution.modify_gui(
         data.get("element_id", ""), new_html=data.get("html"), new_css=data.get("css")
     )
@@ -498,7 +560,7 @@ def evolution_modify_gui():
 @app.route("/api/evolution/modify-agent", methods=["POST"])
 @login_required
 def evolution_modify_agent():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     ok = evolution.modify_own_source(data.get("agent", ""), data.get("code", ""))
     return jsonify({"status": "modified" if ok else "failed"})
 
@@ -506,7 +568,7 @@ def evolution_modify_agent():
 @app.route("/api/evolution/install-package", methods=["POST"])
 @login_required
 def evolution_install_package():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     ok = evolution.install_package(data.get("package", ""))
     return jsonify({"status": "installed" if ok else "failed"})
 
@@ -514,7 +576,7 @@ def evolution_install_package():
 @app.route("/api/evolution/execute", methods=["POST"])
 @login_required
 def evolution_execute():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     result = evolution.execute_code(data.get("code", ""))
     return jsonify(result)
 
@@ -524,7 +586,7 @@ def evolution_execute():
 def handle_settings():
     global settings_data
     if request.method == "POST":
-        data = request.get_json()
+        data = request.get_json(silent=True)
         keys_changed = []
         for key in settings_data:
             if key in data:
@@ -574,7 +636,7 @@ def handle_settings():
 @app.route("/api/chat", methods=["POST"])
 @login_required
 def chat_send():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     msg = data.get("message", "").strip()
     if not msg:
         return jsonify({"error": "No message"}), 400
@@ -619,7 +681,7 @@ def adb_devices():
 @login_required
 @license_required
 def adb_info():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     device = data.get("device", "")
     if adb is None:
         return jsonify({"error": "ADB not available"}), 503
@@ -631,7 +693,7 @@ def adb_info():
 @login_required
 @license_required
 def adb_shell():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     if adb is None:
         return jsonify({"error": "ADB not available"}), 503
     r = adb.shell(
@@ -644,7 +706,7 @@ def adb_shell():
 @login_required
 @license_required
 def adb_install():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     if adb is None:
         return jsonify({"error": "ADB not available"}), 503
     r = adb.install(data.get("apk_path", ""), data.get("device", ""))
@@ -655,7 +717,7 @@ def adb_install():
 @login_required
 @license_required
 def adb_uninstall():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     if adb is None:
         return jsonify({"error": "ADB not available"}), 503
     r = adb.uninstall(data.get("package", ""), data.get("device", ""))
@@ -668,7 +730,7 @@ def adb_uninstall():
 def adb_root_check():
     if adb is None:
         return jsonify({"error": "ADB not available"}), 503
-    data = request.get_json() if request.is_json else {}
+    data = request.get_json(silent=True) if request.is_json else {}
     rooted = adb.is_rooted(data.get("device", ""))
     return jsonify({"rooted": rooted})
 
@@ -679,7 +741,7 @@ def adb_root_check():
 def adb_root_attempt():
     if adb is None:
         return jsonify({"error": "ADB not available"}), 503
-    data = request.get_json() if request.is_json else {}
+    data = request.get_json(silent=True) if request.is_json else {}
     r = adb.attempt_root(data.get("device", ""))
     return jsonify(r)
 
@@ -690,7 +752,7 @@ def adb_root_attempt():
 def adb_screenshot():
     if adb is None:
         return jsonify({"error": "ADB not available"}), 503
-    data = request.get_json() if request.is_json else {}
+    data = request.get_json(silent=True) if request.is_json else {}
     r = adb.screenshot(data.get("device", ""))
     return jsonify(r)
 
@@ -698,7 +760,7 @@ def adb_screenshot():
 @app.route("/api/speak", methods=["POST"])
 @login_required
 def api_speak():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     text = data.get("text", "")
     if not text:
         return jsonify({"error": "No text"}), 400
@@ -739,7 +801,7 @@ def api_screen_preview():
 @app.route("/api/settings/conversation-audio", methods=["POST"])
 @login_required
 def api_conversation_audio():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     enabled = data.get("enabled", True)
     save_audio_state(enabled)
     return jsonify({"conversation_audio_enabled": enabled})

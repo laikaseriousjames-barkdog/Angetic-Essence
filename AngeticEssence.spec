@@ -1,4 +1,13 @@
 # -*- mode: python ; coding: utf-8 -*-
+# Force-recompile ALL source to fresh .pyc before PyInstaller reads them.
+# This prevents stale __pycache__ bytecode from being bundled instead of
+# the latest source changes.
+import compileall, os
+_base = r'C:\Users\evosp\Downloads\angeticbackup\agent_zero'
+for _pkg in ('dashboard', 'core', 'agents', 'plugins', 'vm', 'android'):
+    compileall.compile_dir(os.path.join(_base, _pkg), force=True, quiet=1)
+compileall.compile_file(os.path.join(_base, 'main.py'), force=True, quiet=1)
+
 from PyInstaller.utils.hooks import collect_all, collect_submodules, collect_data_files
 import os
 
@@ -14,16 +23,13 @@ werkzeug_datas, werkzeug_binaries, werkzeug_hiddenimports = collect_all('werkzeu
 jinja2_datas, jinja2_binaries, jinja2_hiddenimports = collect_all('jinja2')
 
 all_datas = (
-    dashboard_datas
+    # Only keep non-.py data from dashboard (templates, static, etc.)
+    # Raw .py files must NOT be in datas — they override the compiled PYZ bytecode
+    [(src, dst) for src, dst in dashboard_datas if not src.endswith(('.py', '.pyc'))]
     + flask_datas
     + werkzeug_datas
     + jinja2_datas
     + [
-        (os.path.join(BASE, 'core'),                          'core'),
-        (os.path.join(BASE, 'agents'),                        'agents'),
-        (os.path.join(BASE, 'vm'),                            'vm'),
-        (os.path.join(BASE, 'android'),                       'android'),
-        (os.path.join(BASE, 'plugins'),                       'plugins'),
         (os.path.join(BASE, 'dashboard', 'templates'),        'dashboard/templates'),
         (os.path.join(BASE, 'dashboard', 'static'),           'dashboard/static'),
         (os.path.join(BASE, 'config.yaml'),                   '.'),
