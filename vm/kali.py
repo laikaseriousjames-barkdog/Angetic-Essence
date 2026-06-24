@@ -257,11 +257,20 @@ class KaliVM:
         self._log_healing("installing_tools", "Installing Kali security tools")
         try:
             cmd = (
-                "sudo apt-get update -qq 2>/dev/null && "
-                "sudo apt-get install -y -qq nmap curl wget netcat-openbsd "
+                "apt-get update -qq 2>/dev/null && "
+                "DEBIAN_FRONTEND=noninteractive apt-get install -y -qq nmap curl wget netcat-openbsd "
                 "sqlmap hydra dirb jq dnsutils whois 2>/dev/null | tail -3"
             )
-            result = self._run_wsl(cmd, timeout=300)
+            # Use '-u root' to bypass sudo password prompt
+            result = subprocess.run(
+                ["wsl", "-d", self._wsl_name, "-u", "root", "--", "bash", "-c", cmd],
+                capture_output=True,
+                text=True,
+                timeout=300,
+            )
+            if result.returncode != 0:
+                raise RuntimeError(f"Apt install failed: {result.stderr[:200]}")
+            
             self._tools_installed = True
             self._log_healing("tools_installed", "Security tools installed")
             return True
