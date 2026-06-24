@@ -121,6 +121,10 @@ class BaseAgent:
         import re
         plan_text = plan_text.strip()
         
+        if plan_text.startswith("[Model unavailable:"):
+            self.memory.save_message(self.name, "assistant", plan_text)
+            return plan_text, plan_text
+            
         # More robust extraction for smaller LLMs that don't obey strict JSON formatting
         match = re.search(r'(\{.*\})', plan_text, re.DOTALL)
         clean_text = match.group(1) if match else plan_text.strip()
