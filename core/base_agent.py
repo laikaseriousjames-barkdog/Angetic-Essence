@@ -118,8 +118,12 @@ class BaseAgent:
         return _sync_run(self._execute_tool_plan_async(plan_text))
 
     async def _execute_tool_plan_async(self, plan_text: str) -> tuple:
+        import re
         plan_text = plan_text.strip()
-        clean_text = plan_text.removeprefix("```json").removesuffix("```").strip()
+        
+        # More robust extraction for smaller LLMs that don't obey strict JSON formatting
+        match = re.search(r'(\{.*\})', plan_text, re.DOTALL)
+        clean_text = match.group(1) if match else plan_text.strip()
 
         try:
             plan = json.loads(clean_text)
