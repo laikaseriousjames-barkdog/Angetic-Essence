@@ -59,9 +59,9 @@ class LLMClient:
         self.logger = setup_logger("llm")
         self._memory = memory
         self._model_name = model_name or self.config.get(
-            "model", "Qwen/Qwen2.5-0.5B-Instruct"
+            "model", "openrouter/auto"
         )
-        self._provider = self.config.get("provider", "local")
+        self._provider = self.config.get("provider", "openrouter")
         self._process = None
         self._port = 8081
         self._base_url = f"http://127.0.0.1:{self._port}"
@@ -350,6 +350,8 @@ class LLMClient:
             env_key, api_url, defaults = key_map[provider]
             key = os.environ.get(env_key, "")
             if not key:
+                if provider == "openrouter":
+                    return "[ERROR: No OpenRouter API key found. Please open the Dashboard Settings to configure your API key, choose a different provider, or connect a local model.]"
                 return f"[ERROR: No {env_key} set]"
             body_dict = {
                 **defaults,

@@ -155,8 +155,8 @@ def save_audio_state(enabled: bool):
 
 settings_data = {
     "theme": "dark",
-    "llm_provider": "local",
-    "llm_model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "llm_provider": "openrouter",
+    "llm_model": "openrouter/auto",
     "openai_key": "",
     "anthropic_key": "",
     "google_key": "",

@@ -121,7 +121,7 @@ class BaseAgent:
         import re
         plan_text = plan_text.strip()
         
-        if plan_text.startswith("[Model unavailable:"):
+        if plan_text.startswith("[Model unavailable:") or plan_text.startswith("[ERROR:"):
             self.memory.save_message(self.name, "assistant", plan_text)
             return plan_text, plan_text
             
