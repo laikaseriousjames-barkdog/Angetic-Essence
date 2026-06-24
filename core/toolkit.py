@@ -162,11 +162,18 @@ class ToolKit:
             return "Error: Command blocked by sandbox."
 
         self.logger.info(f"run_bash_async: {command[:120]}")
+        
+        env = os.environ.copy()
+        if self.sandbox.enabled:
+            for key in ["OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GOOGLE_API_KEY", "OPENROUTER_API_KEY"]:
+                env.pop(key, None)
+                
         process = await asyncio.create_subprocess_shell(
             command,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
             cwd=self.work_dir,
+            env=env,
         )
         try:
             stdout, stderr = await asyncio.wait_for(
@@ -241,12 +248,17 @@ class ToolKit:
                     stdin=asyncio.subprocess.DEVNULL,
                 )
             else:
+                env = os.environ.copy()
+                if self.sandbox.enabled:
+                    for key in ["OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GOOGLE_API_KEY", "OPENROUTER_API_KEY"]:
+                        env.pop(key, None)
                 process = await asyncio.create_subprocess_exec(
                     sys.executable,
                     script_path,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
                     stdin=asyncio.subprocess.DEVNULL,
+                    env=env,
                 )
 
             try:

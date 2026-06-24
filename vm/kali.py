@@ -34,7 +34,8 @@ class KaliVM:
         entry = {"time": time.time(), "event": event, "detail": detail}
         try:
             history = json.loads(log_path.read_text()) if log_path.exists() else []
-        except Exception:
+        except Exception as e:
+            self.logger.error(f"Failed to load healing log: {e}")
             history = []
         history.append(entry)
         log_path.write_text(json.dumps(history[-50:], indent=2))
@@ -197,8 +198,8 @@ class KaliVM:
                 text=True,
                 timeout=10,
             )
-        except Exception:
-            pass
+        except Exception as e:
+            self.logger.debug(f"Docker rm failed (likely didn't exist): {e}")
         self._container_uuid = uuid.uuid4().hex
         container_name = f"kali-agent-{self._container_uuid[:8]}"
         try:
@@ -302,7 +303,8 @@ class KaliVM:
             if HEALING_LOG.exists():
                 return json.loads(HEALING_LOG.read_text())
             return []
-        except Exception:
+        except Exception as e:
+            self.logger.error(f"Failed to read healing log: {e}")
             return []
 
     @property

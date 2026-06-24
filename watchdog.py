@@ -23,8 +23,8 @@ def _load_config() -> dict:
     try:
         if CONFIG_PATH.exists():
             return yaml.safe_load(CONFIG_PATH.read_text()) or {}
-    except Exception:
-        pass
+    except Exception as e:
+        log_event(f"Failed to load config.yaml: {e}")
     return {}
 
 
@@ -54,8 +54,8 @@ def _machine_id() -> str:
                 winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Cryptography"
             ) as k:
                 return winreg.QueryValueEx(k, "MachineGuid")[0]
-    except Exception:
-        pass
+    except Exception as e:
+        log_event(f"Failed to read winreg MachineGuid: {e}")
     try:
         return base64.b64encode(
             (
@@ -63,8 +63,8 @@ def _machine_id() -> str:
                 or Path("/var/lib/dbus/machine-id").read_text().strip()
             ).encode()
         ).decode()
-    except Exception:
-        pass
+    except Exception as e:
+        log_event(f"Failed to read linux machine-id: {e}")
     return base64.b64encode(os.urandom(16)).decode()
 
 

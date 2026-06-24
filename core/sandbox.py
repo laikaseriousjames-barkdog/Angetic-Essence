@@ -5,11 +5,16 @@ import shlex
 import time
 from pathlib import Path
 
+from core.logger import setup_logger
+
+logger = setup_logger("sandbox")
+
 # Import docker dynamically to avoid startup crashes if docker is not installed
 try:
     import docker
     client = docker.from_env()
-except Exception:
+except Exception as e:
+    logger.debug(f"Docker not available: {e}")
     client = None
 
 
@@ -21,7 +26,8 @@ def get_or_create_kali_container():
         if container.status != 'running':
             container.start()
         return container
-    except Exception:
+    except Exception as e:
+        logger.debug(f"Kali container not found, attempting to create: {e}")
         try:
             container = client.containers.run(
                 'kalilinux/kali-rolling',
@@ -32,7 +38,8 @@ def get_or_create_kali_container():
             )
             time.sleep(2)
             return container
-        except Exception:
+        except Exception as run_err:
+            logger.error(f"Failed to create Kali container: {run_err}")
             return None
 
 
@@ -95,9 +102,41 @@ class Sandbox:
         if not self.enabled:
             return True, ""
             
-        dangerous = {"os", "subprocess", "socket", "eval", "exec", "open", "sys"}
-        for word in dangerous:
-            if word in code:
-                if f"import {word}" in code or f"from {word}" in code or f"{word}(" in code:
-                    return False, f"Dangerous Python operation blocked: {word}"
+        import ast
+        try:
+            tree = ast.parse(code)
+        except SyntaxError as e:
+            return False, f"SyntaxError: {e}"
+            
+        forbidden_modules = {"os", "subprocess", "sys", "socket", "pty", "shutil"}
+        forbidden_funcs = {"eval", "exec", "open", "compile", "__import__"}
+        
+        class SecurityVisitor(ast.NodeVisitor):
+            def __init__(self):
+                self.blocked = []
+                
+            def visit_Import(self, node):
+                for alias in node.names:
+                    if alias.name.split('.')[0] in forbidden_modules:
+                        self.blocked.append(f"import of forbidden module: {alias.name}")
+                self.generic_visit(node)
+                
+            def visit_ImportFrom(self, node):
+                if node.module and node.module.split('.')[0] in forbidden_modules:
+                    self.blocked.append(f"import from forbidden module: {node.module}")
+                self.generic_visit(node)
+                
+            def visit_Call(self, node):
+                if isinstance(node.func, ast.Name) and node.func.id in forbidden_funcs:
+                    self.blocked.append(f"call to forbidden function: {node.func.id}")
+                elif isinstance(node.func, ast.Attribute) and node.func.attr in forbidden_funcs:
+                    self.blocked.append(f"call to forbidden function attribute: {node.func.attr}")
+                self.generic_visit(node)
+                
+        visitor = SecurityVisitor()
+        visitor.visit(tree)
+        if visitor.blocked:
+            logger.warning(f"Python sandbox blocked execution: {visitor.blocked[0]}")
+            return False, f"Dangerous Python operation blocked: {visitor.blocked[0]}"
+            
         return True, ""

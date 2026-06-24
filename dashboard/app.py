@@ -42,6 +42,9 @@ from core.auth import (
 from core.memory import MemoryManager
 from core.licensing import validate_or_exit
 from plugins import discover_plugins
+from core.logger import setup_logger
+
+logger = setup_logger("dashboard")
 
 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
     template_folder = os.path.join(sys._MEIPASS, "dashboard", "templates")
@@ -106,8 +109,8 @@ def _get_or_create_secret_key() -> str:
             stored = _key_path.read_text().strip()
             if len(stored) >= 32:
                 return stored
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Failed to read secret key: {e}")
     new_key = "ae-secret-" + uuid.uuid4().hex + uuid.uuid4().hex
     _key_path.write_text(new_key)
     return new_key
@@ -127,7 +130,8 @@ try:
     from android.adb import ADBBridge
 
     adb = ADBBridge()
-except Exception:
+except Exception as e:
+    logger.warning(f"ADBBridge could not be initialized: {e}")
     adb = None
 memory_db = MemoryManager()
 agent_status = {
@@ -143,8 +147,8 @@ def load_audio_state() -> bool:
     if AUDIO_STATE_FILE.exists():
         try:
             return json.loads(AUDIO_STATE_FILE.read_text()).get("enabled", True)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Failed to load audio state: {e}")
     return True
 
 
@@ -201,10 +205,11 @@ def load_settings_from_config():
             try:
                 from android.adb import ADBBridge
                 adb = ADBBridge(settings_data["adb_path"])
-            except Exception:
+            except Exception as e:
+                logger.warning(f"Failed to initialize ADBBridge from config: {e}")
                 adb = None
         except Exception as e:
-            pass
+            logger.error(f"Failed to load settings from config: {e}")
 
 load_settings_from_config()
 
@@ -240,8 +245,8 @@ def tail_logs():
                                 log_queue.put(line)
                                 _parse_log_line(line, log_file.name)
                     last_sizes[log_file.name] = size
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug(f"Failed to read log file {log_file.name}: {e}")
         
         # Tail agent_messages.jsonl
         msg_file = LOG_DIR / "agent_messages.jsonl"
@@ -259,11 +264,11 @@ def tail_logs():
                                 try:
                                     msg = json.loads(line)
                                     agent_message_queue.put(msg)
-                                except Exception:
-                                    pass
+                                except Exception as e:
+                                    logger.debug(f"Failed to parse agent message line: {e}")
                     last_sizes[msg_file.name] = size
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug(f"Failed to read agent_messages.jsonl: {e}")
         time.sleep(1)
 
 
@@ -277,8 +282,8 @@ def _parse_log_line(line: str, source: str):
         try:
             parts = line.split("Iteration")[1].split("/")
             current_iteration = int(parts[0].strip())
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Failed to parse iteration from line: {e}")
 
 
 def stream_output():
@@ -302,8 +307,8 @@ def send_restart_signal():
                 except subprocess.TimeoutExpired:
                     agent_process.kill()
                     agent_process.wait(timeout=5)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.error(f"Failed to terminate agent process: {e}")
             agent_process = None
             for name in agent_status:
                 agent_status[name]["status"] = "idle"
@@ -841,8 +846,8 @@ def api_spend():
 
             cfg = yaml.safe_load(config_path.read_text()) or {}
             max_spend = float((cfg.get("cost") or {}).get("max_daily_spend", 5.0))
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Failed to read cost config: {e}")
     return jsonify(
         {
             "daily_spend": round(daily, 4),
@@ -866,8 +871,8 @@ def api_monetization():
         stripe_enabled = stripe_int.enabled
         if stripe_enabled:
             products = stripe_int.list_products()
-    except Exception:
-        pass
+    except Exception as e:
+        logger.debug(f"Stripe integration not available: {e}")
 
     return jsonify({
         "total_revenue": 1490.00 if stripe_enabled else 0.0,
