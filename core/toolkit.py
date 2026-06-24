@@ -360,6 +360,49 @@ class ToolKit:
         ok = self.kali.install_tools(packages)
         return "Installation started in Kali VM" if ok else "[ERROR] Failed to start installation in Kali VM"
 
+    def adb_setup(self) -> str:
+        try:
+            import urllib.request
+            import zipfile
+            import yaml
+            
+            target_dir = self.work_dir / "android-tools"
+            target_dir.mkdir(exist_ok=True)
+            zip_path = target_dir / "platform-tools.zip"
+            
+            self.logger.info("Downloading Android SDK platform-tools...")
+            url = "https://dl.google.com/android/repository/platform-tools-latest-windows.zip"
+            urllib.request.urlretrieve(url, str(zip_path))
+            
+            self.logger.info("Extracting platform-tools...")
+            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                zip_ref.extractall(target_dir)
+            
+            if zip_path.exists():
+                zip_path.unlink()
+                
+            adb_exe = target_dir / "platform-tools" / "adb.exe"
+            if not adb_exe.exists():
+                return "[ERROR] ADB executable not found after extraction."
+                
+            config_path = self.work_dir / "config.yaml"
+            cfg = {}
+            if config_path.exists():
+                cfg = yaml.safe_load(config_path.read_text()) or {}
+            
+            cfg["adb_path"] = str(adb_exe.resolve())
+            config_path.write_text(yaml.dump(cfg))
+            
+            os.environ["ADB_PATH"] = str(adb_exe.resolve())
+            
+            from android.adb import ADBBridge
+            self.adb = ADBBridge(str(adb_exe.resolve()))
+            
+            return f"ADB successfully downloaded and configured at {adb_exe}"
+            
+        except Exception as e:
+            return f"[ERROR] ADB Setup Failed: {e}"
+
     def adb_devices(self) -> str:
         if not self.adb:
             return "[ERROR] ADB bridge not initialized"
@@ -494,6 +537,7 @@ class ToolKit:
 - play_wav(path) — play a WAV audio file
 - kali_exec(command) — execute a shell command in the Kali Linux VM
 - kali_install(packages) — install packages in the Kali Linux VM (expects a list of package strings)
+- adb_setup() — download and install ADB. YOU MUST ASK THE USER FOR PERMISSION IN PLAIN TEXT AND WAIT FOR THEIR APPROVAL BEFORE CALLING THIS TOOL.
 - adb_devices() — list connected Android devices
 - adb_shell(command, device) — run a shell command on an Android device via ADB
 - adb_root_check(device) — check if an Android device has root access
