@@ -159,8 +159,8 @@ def save_audio_state(enabled: bool):
 
 settings_data = {
     "theme": "dark",
-    "llm_provider": "openrouter",
-    "llm_model": "openrouter/auto",
+    "llm_provider": "pollinations",
+    "llm_model": "openai",
     "openai_key": "",
     "anthropic_key": "",
     "google_key": "",

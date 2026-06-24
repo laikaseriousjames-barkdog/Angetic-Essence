@@ -59,9 +59,9 @@ class LLMClient:
         self.logger = setup_logger("llm")
         self._memory = memory
         self._model_name = model_name or self.config.get(
-            "model", "openrouter/auto"
+            "model", "openai"
         )
-        self._provider = self.config.get("provider", "openrouter")
+        self._provider = self.config.get("provider", "pollinations")
         self._process = None
         self._port = 8081
         self._base_url = f"http://127.0.0.1:{self._port}"
@@ -274,6 +274,24 @@ class LLMClient:
                 {"model": self._model_name or "openai/gpt-4o-mini"},
             ),
         }
+
+        if provider == "pollinations":
+            body = json.dumps({
+                "model": self._model_name or "openai",
+                "messages": messages,
+                "temperature": temperature
+            }).encode()
+            headers = {
+                "Content-Type": "application/json",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "application/json"
+            }
+            try:
+                data = await self._call_remote_async("https://text.pollinations.ai/openai/chat/completions", body, headers)
+                # No token usage provided by pollinations, so we just return the text
+                return data["choices"][0]["message"]["content"]
+            except Exception as e:
+                return f"[Pollinations error: {e}]"
 
         if provider == "anthropic":
             key = os.environ.get("ANTHROPIC_API_KEY", "")
