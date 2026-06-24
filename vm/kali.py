@@ -385,11 +385,29 @@ class KaliVM:
         self.output_queue.put(f"[KALI] Installing: {pkgs}")
         if self._wsl_name is None:
             return self.exec_command(
-                f"apt-get update -qq && apt-get install -y -qq {pkgs} 2>&1"
+                f"apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq {pkgs} 2>&1"
             )
-        return self.exec_command(
-            f"sudo apt-get update -qq && sudo apt-get install -y -qq {pkgs} 2>&1"
-        )
+        
+        try:
+            cmd = f"apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq {pkgs} 2>&1"
+            result = subprocess.run(
+                ["wsl", "-d", self._wsl_name, "-u", "root", "--", "bash", "-c", cmd],
+                capture_output=True,
+                text=True,
+                timeout=300,
+            )
+            output = result.stdout + result.stderr
+            for line in output.split("\n"):
+                if line.strip():
+                    self.output_queue.put(line.strip())
+            self.output_queue.put(f"[EXIT {result.returncode}]")
+            return result.returncode == 0
+        except subprocess.TimeoutExpired:
+            self.output_queue.put("[KALI] Command timed out (300s)")
+            return False
+        except Exception as e:
+            self.output_queue.put(f"[KALI] Error: {e}")
+            return False
 
     def stop(self):
         with self._lock:
