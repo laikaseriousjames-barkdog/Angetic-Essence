@@ -493,6 +493,83 @@ class ToolKit:
         except Exception as e:
             return f"[ERROR] Modify GUI: {e}"
 
+    def operate_computer(self, goal: str, max_steps: int = 10) -> str:
+        return _sync_run(self.operate_computer_async(goal, max_steps))
+
+    async def operate_computer_async(self, goal: str, max_steps: int = 10) -> str:
+        try:
+            from core.llm import LLMClient
+            import json
+            import time
+            import re
+            
+            # Instantiate a vision-capable LLM client connecting via OpenRouter
+            llm = LLMClient(model_name="openai/gpt-4o-mini", config={"provider": "openrouter"})
+            
+            self.logger.info(f"Starting computer control loop for goal: {goal}")
+            
+            system_prompt = """You are an autonomous computer control agent. 
+You will be given a screenshot of the user's computer and a goal.
+Output ONLY a valid JSON object containing the action you want to take. No other text or markdown formatting.
+Actions allowed:
+- "click" with "x" and "y" (integers)
+- "type" with "text" (string)
+- "hotkey" with "keys" (list of strings like ["ctrl", "c"])
+- "done" with "reason" (string)
+Format: {"action": "click", "x": 100, "y": 200}
+"""
+            
+            history = []
+            
+            for step in range(max_steps):
+                b64 = self.screenshot_base64()
+                if b64.startswith("[ERROR]"):
+                    return f"Failed to get screenshot: {b64}"
+                
+                content = [
+                    {"type": "text", "text": f"Goal: {goal}\nStep {step + 1}/{max_steps}. What is the next action? If the goal appears to be accomplished, output the 'done' action."},
+                    {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}}
+                ]
+                
+                messages = [{"role": "system", "content": system_prompt}] + history + [{"role": "user", "content": content}]
+                
+                resp = await llm.chat_async(messages, max_tokens=150, temperature=0.1)
+                
+                if resp.startswith("[ERROR: No OpenRouter API key"):
+                    return "[ERROR] OpenRouter API Key required for vision models. Please configure it in Settings."
+                
+                try:
+                    match = re.search(r'(\{.*\})', resp, re.DOTALL)
+                    clean_text = match.group(1) if match else resp.strip()
+                    plan = json.loads(clean_text)
+                except Exception as e:
+                    self.logger.error(f"Failed to parse vision agent JSON: {resp}")
+                    history.append({"role": "user", "content": "Invalid JSON returned. Output ONLY the JSON object without code block markdown."})
+                    continue
+                    
+                action = plan.get("action")
+                self.logger.info(f"Computer control step {step+1}: {action} | {plan}")
+                
+                if action == "done":
+                    return f"Goal achieved: {plan.get('reason')}"
+                elif action == "click":
+                    res = self.mouse_click(plan.get("x"), plan.get("y"))
+                    history.append({"role": "assistant", "content": f"Clicked ({plan.get('x')}, {plan.get('y')})"})
+                elif action == "type":
+                    res = self.type_text(plan.get("text"))
+                    history.append({"role": "assistant", "content": f"Typed: {plan.get('text')}"})
+                elif action == "hotkey":
+                    res = self.hotkey(*plan.get("keys", []))
+                    history.append({"role": "assistant", "content": f"Hotkey: {plan.get('keys')}"})
+                else:
+                    history.append({"role": "assistant", "content": f"Unknown action: {action}"})
+                    
+                time.sleep(1.5) # Wait for UI state to settle before taking the next screenshot
+                
+            return "Failed to achieve goal within max steps."
+        except Exception as e:
+            return f"[ERROR] Computer control failed: {e}"
+
     def modify_agent_source(self, agent: str, code: str) -> str:
         if not self.evolution:
             return "[ERROR] SelfEvolution not initialized"
@@ -546,6 +623,7 @@ class ToolKit:
 - adb_install(apk_path, device) — install an APK on the Android device
 - adb_uninstall(package, device) — uninstall a package from the Android device
 - adb_device_info(device) — get Android device hardware/OS metadata
+- operate_computer(goal) — autonomously control the PC (move mouse, type, read screen) to achieve a task.
 - create_tool(name, description, code) — write a new tool script to the tools/ directory
 - modify_gui(element_id, html, css) — modify the dashboard HTML/CSS
 - modify_agent_source(agent, code) — edit the source code of an agent in agents/ directory
