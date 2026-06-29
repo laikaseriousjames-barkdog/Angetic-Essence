@@ -3,16 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Angetic Essence — Fully local, hardware-locked Tri-Agent AI orchestration console. Kali Linux bridge, ADB automation, AST code patching. No cloud. No censorship.">
+    <meta property="og:title" content="Angetic Essence — Autonomous AI, Untethered.">
+    <meta property="og:description" content="Deploy 3 self-evolving AI agents. Kali Linux bridge, ADB automation, surgical AST patching. Your hardware, your swarm.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://laikaseriousjames-barkdog.github.io/Angetic-Essence/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Angetic Essence — Autonomous AI, Untethered.">
+    <meta name="twitter:description" content="Deploy 3 self-evolving AI agents. Kali Linux, ADB, AST patching. No cloud limits.">
     <title>Angetic Essence — Local Autonomous AI Agent Cyberdeck</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+
+    <!-- NAV -->
     <nav>
         <div class="nav-inner">
-            <span class="logo" style="display: flex; align-items: center; gap: 10px;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="40" style="border-radius: 10px;">
+            <a href="#" class="logo-link">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="36" style="border-radius:8px;flex-shrink:0;">
                   <rect width="500" height="500" fill="#0B0C10"/>
                   <polygon points="250,40 460,150 460,350 250,460 40,350 40,150" fill="none" stroke="#45A29E" stroke-width="6" stroke-opacity="0.4"/>
                   <path d="M 250 100 L 400 400 L 320 400 L 250 250 L 180 400 L 100 400 Z" fill="#66FCF1"/>
@@ -21,9 +31,13 @@
                   <line x1="250" y1="100" x2="250" y2="220" stroke="#1F2833" stroke-width="8"/>
                   <line x1="250" y1="40" x2="250" y2="100" stroke="#66FCF1" stroke-width="8"/>
                 </svg>
-                angetic_essence<span class="dim">//</span>
-            </span>
-            <div class="nav-links">
+                <span class="logo">angetic_essence<span class="dim">//</span></span>
+            </a>
+            <button class="nav-hamburger" aria-label="Toggle menu" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links" id="nav-menu">
+                <a href="#agents">Agents</a>
                 <a href="#features">Capabilities</a>
                 <a href="#demo">Demo</a>
                 <a href="#pricing" class="nav-cta">Get Started</a>
@@ -31,28 +45,89 @@
         </div>
     </nav>
 
+    <!-- HERO -->
     <header class="hero">
         <div class="hero-bg"></div>
+        <div class="hero-grid-overlay"></div>
         <div class="hero-content">
-            <span class="badge">V1.0.0 — Sandboxed Local Release</span>
+            <span class="badge">
+                <span class="badge-dot"></span>
+                V1.0.0 — Sandboxed Local Release
+            </span>
             <h1>Autonomous AI,<br><span class="accent">Untethered.</span></h1>
-            <p class="hero-sub">Angetic Essence is a fully local, hardware-locked Tri-Agent orchestration console. Execute deeply integrated system commands, autonomous network pentesting, and surgical codebase patching from a single command center. No cloud limits. No censorship. Your hardware, your swarm.</p>
-            <div class="hero-actions">
-                <a href="https://github.com/laikaseriousjames-barkdog/Angetic-Essence#readme" class="btn-primary">View Documentation</a>
-                <a href="#pricing" class="btn-secondary">Buy Now: $29.99 - Secure Stripe Checkout</a>
+            <p class="hero-sub">Angetic Essence is a fully local, hardware-locked Tri-Agent orchestration console. Execute deeply integrated system commands, autonomous network pentesting, and surgical codebase patching from a single command center. <strong>No cloud limits. No censorship. Your hardware, your swarm.</strong></p>
+            <div class="hero-stats">
+                <div class="stat"><span class="stat-num">3</span><span class="stat-label">AI Agents</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Local</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat"><span class="stat-num">$29.99</span><span class="stat-label">One-time</span></div>
             </div>
+            <div class="hero-actions">
+                <a href="#pricing" class="btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download Free App
+                </a>
+                <a href="https://buy.stripe.com/bJe3cv6GCcll5O38qT6g800" class="btn-secondary" target="_blank" rel="noopener">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Buy License — $29.99
+                </a>
+            </div>
+            <p class="hero-note">✓ Free to download &nbsp;·&nbsp; ✓ License unlocks all hardware bridges &nbsp;·&nbsp; ✓ Offline forever</p>
+        </div>
+        <div class="hero-scroll-hint">
+            <span>Scroll</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
     </header>
 
+    <!-- AGENTS -->
+    <section class="agents-section" id="agents">
+        <div class="section-header">
+            <span class="section-tag">The Swarm</span>
+            <h2>Three Specialized Agents.<br><span class="accent">One Unified Mind.</span></h2>
+            <p>Stop relying on single-threaded chatbots. Angetic Essence splits complex operations across three distinct cognitive architectures working in parallel.</p>
+        </div>
+        <div class="agents-grid">
+            <div class="agent-card commander">
+                <div class="agent-num">01</div>
+                <div class="agent-icon-wrap">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                </div>
+                <div class="agent-role">The Commander</div>
+                <h3>Alan Turing</h3>
+                <p>The strategic brain. Turing breaks massive, abstract user goals into long-horizon, recursive task queues and delegates them to the execution layer.</p>
+                <div class="agent-tag">Strategic Planning · Task Delegation · Queue Management</div>
+            </div>
+            <div class="agent-card developer">
+                <div class="agent-num">02</div>
+                <div class="agent-icon-wrap">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                </div>
+                <div class="agent-role">The Developer</div>
+                <h3>Donald Knuth</h3>
+                <p>The pragmatic builder. Knuth handles file system operations, writes robust scripts, and builds entire application architectures autonomously.</p>
+                <div class="agent-tag">File Systems · Script Writing · Architecture</div>
+            </div>
+            <div class="agent-card tester">
+                <div class="agent-num">03</div>
+                <div class="agent-icon-wrap">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+                </div>
+                <div class="agent-role">The Tester</div>
+                <h3>Ada Lovelace</h3>
+                <p>The meticulous QA. Ada runs PyTest suites, intentionally breaks Knuth's code, and automates physical Android devices via ADB to validate UI.</p>
+                <div class="agent-tag">PyTest · ADB Automation · QA Validation</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEMO / TERMINAL -->
     <section class="demo-section" id="demo">
         <div class="section-header">
-            <h2>Three Specialized Agents. <span class="accent">One Unified Mind.</span></h2>
-            <p>Stop relying on single-threaded chatbots. Angetic Essence splits complex operations across three distinct cognitive architectures.</p>
-            <p style="color: var(--fg2); margin-top: 15px; font-size: 0.9rem; text-align: left; max-width: 800px; margin-left: auto; margin-right: auto;">
-                <strong>Alan Turing (The Commander):</strong> The strategic brain. Turing breaks massive, abstract user goals into long-horizon, recursive task queues and delegates them to the execution layer.<br><br>
-                <strong>Donald Knuth (The Developer):</strong> The pragmatic builder. Knuth handles file system operations, writes robust scripts, and builds entire application architectures autonomously.<br><br>
-                <strong>Ada Lovelace (The Tester):</strong> The meticulous QA. Ada runs PyTest suites, attempts to intentionally break Knuth's code, and automates physical Android devices via ADB to validate UI.
-            </p>
+            <span class="section-tag">In Action</span>
+            <h2>Kali &amp; ADB <span class="accent">Orchestration Pipeline</span></h2>
+            <p>Watch the swarm operate in real-time — from task delegation to execution across every layer of your system.</p>
         </div>
         <div class="hardware-frame">
             <div class="screen-header">
@@ -61,98 +136,199 @@
                     <span class="dot yellow"></span>
                     <span class="dot green"></span>
                 </div>
-                <span class="window-title">Angetic Essence — Kali & ADB Orchestration Pipeline</span>
+                <span class="window-title">angetic_essence — Kali &amp; ADB Orchestration Pipeline</span>
+                <span class="window-status"><span class="status-dot"></span> LIVE</span>
             </div>
             <div class="screen-body">
                 <video autoplay loop muted playsinline class="demo-video">
                     <source src="assets/demo.mp4" type="video/mp4">
-                    <!-- Text fallback representing terminal output in case video asset is not present -->
-                    <pre class="terminal-fallback">
-[Knuth] Initializing news-based developer intelligence loop...
-[Lovelace] Verification suites booted: pytest-coverage ready.
-[Turing] Analyzing Kali Linux WSL VM health: Status OK.
-[SYSTEM] Ready for tasks. Enter target command.
-$ /api/adb/devices -> Listing ADB nodes. Found device [emulator-5554]
-$ /api/vm/exec "nmap -sV -F 192.168.1.1" -> Triggering network audit tool...
-                    </pre>
+                    <div class="terminal-fallback" id="terminal"></div>
                 </video>
             </div>
         </div>
     </section>
 
+    <!-- CAPABILITIES -->
     <section class="value-props" id="features">
-        <div class="section-header" style="text-align: center; margin-bottom: 40px;">
+        <div class="section-header">
+            <span class="section-tag">Capabilities</span>
             <h2>Unprecedented <span class="accent">System Access.</span></h2>
+            <p>Every tool you need to deploy autonomous agents at the edge of what software can do.</p>
         </div>
         <div class="props-grid">
             <div class="prop-card">
                 <div class="prop-icon">✂️</div>
                 <h3>Surgical AST Code Patching</h3>
-                <p>Watch the swarm evolve its own logic. Agents use Semantic Abstract Syntax Tree (AST) search to parse and diff-patch massive Python codebases without overwriting existing logic.</p>
+                <p>Agents use Semantic Abstract Syntax Tree (AST) search to parse and diff-patch massive Python codebases without overwriting existing logic. The swarm evolves its own code.</p>
             </div>
             <div class="prop-card">
                 <div class="prop-icon">⚔️</div>
                 <h3>Kali Linux Offensive Bridge</h3>
-                <p>Unrestricted network access. Agents bridge directly into a sandboxed Kali Linux WSL instance to autonomously execute port scans, search for vulnerabilities, and run OSINT modules.</p>
+                <p>Unrestricted network access. Agents bridge directly into a sandboxed Kali Linux WSL instance to autonomously execute port scans, vulnerability searches, and OSINT modules.</p>
             </div>
             <div class="prop-card">
                 <div class="prop-icon">📱</div>
-                <h3>Android Debug Bridge (ADB) Automation</h3>
-                <p>Full physical hardware automation. Push APKs, interact with UI elements, and pull system logs from tethered Android devices or emulators.</p>
+                <h3>Android Debug Bridge Automation</h3>
+                <p>Full physical hardware automation. Push APKs, interact with UI elements, and pull system logs from tethered Android devices or emulators — all orchestrated by Ada.</p>
             </div>
             <div class="prop-card">
                 <div class="prop-icon">🔐</div>
                 <h3>Zero-Trust Cryptographic Licensing</h3>
-                <p>Enterprise-grade security. Offline HWID locking powered by an asymmetric Ed25519/RSA validation loop ensures your deployment remains secure and private.</p>
+                <p>Offline HWID locking powered by an asymmetric Ed25519/RSA validation loop. Enterprise-grade security that ensures your deployment stays private and uncloneable.</p>
             </div>
-            <div class="prop-card" style="grid-column: 1 / -1; max-width: 600px; margin: 0 auto;">
+            <div class="prop-card">
                 <div class="prop-icon">🛡️</div>
                 <h3>Total Sandbox Isolation</h3>
-                <p>You control the permissions. Role-Based Access Control (RBAC) and strict sandbox modes ensure your host machine is protected from recursive agent loops.</p>
+                <p>Role-Based Access Control (RBAC) and strict sandbox modes ensure your host machine is fully protected from recursive agent loops or runaway execution.</p>
+            </div>
+            <div class="prop-card">
+                <div class="prop-icon">📡</div>
+                <h3>No Cloud. No Limits.</h3>
+                <p>Runs 100% on your local hardware. No telemetry, no rate limits, no subscriptions. One license key. Yours forever. Your data never leaves your machine.</p>
             </div>
         </div>
     </section>
 
-    <section class="pricing" id="pricing" style="text-align: center; max-width: 800px; margin: 0 auto; padding: 60px 20px;">
+    <!-- PRICING -->
+    <section class="pricing" id="pricing">
         <div class="section-header">
+            <span class="section-tag">Deploy</span>
             <h2>Download First, <span class="accent">Unlock Later.</span></h2>
-            <p style="font-size: 1.1rem; margin-bottom: 30px; line-height: 1.6; color: var(--fg2);">
-                <strong>Step 1:</strong> Download and install the free application to your machine.<br>
-                <strong>Step 2:</strong> Purchase a Pro License Key to unlock advanced hardware integrations and bridges.
-            </p>
+            <p>Start free. Unlock the full swarm with a one-time license key.</p>
         </div>
-        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-            <a href="https://github.com/laikaseriousjames-barkdog/Angetic-Essence/releases/latest/download/Angetic-Essencev1.exe" class="btn-secondary" style="font-size: 1.1rem; padding: 15px 30px; display: flex; align-items: center; gap: 10px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                1. Download Free App
-            </a>
-            <a href="https://buy.stripe.com/bJe3cv6GCcll5O38qT6g800" class="btn-primary" target="_blank" rel="noopener noreferrer" style="font-size: 1.1rem; padding: 15px 30px; display: flex; align-items: center; gap: 10px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                2. Buy License Key ($29.99)
-            </a>
+        <div class="pricing-grid">
+            <div class="pricing-card free-card">
+                <div class="pricing-card-header">
+                    <h3>Base Install</h3>
+                    <div class="price">$0</div>
+                    <div class="price-note">Free forever</div>
+                </div>
+                <p class="card-desc">Download and install the core application. Run the agent UI and explore the interface before committing.</p>
+                <ul>
+                    <li>Core agent UI &amp; console</li>
+                    <li>Local installation</li>
+                    <li>Basic task orchestration</li>
+                    <li>Community support</li>
+                </ul>
+                <a href="https://github.com/laikaseriousjames-barkdog/Angetic-Essence/releases/latest/download/Angetic-Essencev1.exe" class="btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download Free App
+                </a>
+            </div>
+            <div class="pricing-card featured">
+                <div class="featured-badge">⚡ Pro License</div>
+                <div class="pricing-card-header">
+                    <h3>Full Swarm Unlock</h3>
+                    <div class="price accent">$29.99</div>
+                    <div class="price-note">One-time · Offline forever</div>
+                </div>
+                <p class="card-desc">Unlock the full Tri-Agent system with all hardware bridges, Kali integration, and ADB automation.</p>
+                <ul>
+                    <li><strong>Everything in Base Install</strong></li>
+                    <li>Kali Linux WSL Bridge</li>
+                    <li>ADB Android Automation</li>
+                    <li>Surgical AST Code Patching</li>
+                    <li>HWID-locked cryptographic license</li>
+                    <li>All 3 agents: Turing · Knuth · Lovelace</li>
+                    <li>Lifetime updates included</li>
+                </ul>
+                <a href="https://buy.stripe.com/bJe3cv6GCcll5O38qT6g800" class="btn-primary" target="_blank" rel="noopener noreferrer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Buy License — $29.99
+                </a>
+            </div>
         </div>
+        <p class="pricing-footnote">Secure checkout via Stripe &nbsp;·&nbsp; Instant license delivery &nbsp;·&nbsp; Works fully offline after activation</p>
     </section>
 
+    <!-- FOOTER -->
     <footer>
         <div class="footer-inner">
-            <span class="logo" style="display: flex; align-items: center; gap: 10px;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="40" style="border-radius: 10px;">
-                  <rect width="500" height="500" fill="#0B0C10"/>
-                  <polygon points="250,40 460,150 460,350 250,460 40,350 40,150" fill="none" stroke="#45A29E" stroke-width="6" stroke-opacity="0.4"/>
-                  <path d="M 250 100 L 400 400 L 320 400 L 250 250 L 180 400 L 100 400 Z" fill="#66FCF1"/>
-                  <circle cx="250" cy="250" r="30" fill="#1F2833"/>
-                  <circle cx="250" cy="250" r="15" fill="#66FCF1"/>
-                  <line x1="250" y1="100" x2="250" y2="220" stroke="#1F2833" stroke-width="8"/>
-                  <line x1="250" y1="40" x2="250" y2="100" stroke="#66FCF1" stroke-width="8"/>
-                </svg>
-                angetic_essence<span class="dim">//</span>
-            </span>
+            <div class="footer-brand">
+                <a href="#" class="logo-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="32" style="border-radius:6px;flex-shrink:0;">
+                      <rect width="500" height="500" fill="#0B0C10"/>
+                      <polygon points="250,40 460,150 460,350 250,460 40,350 40,150" fill="none" stroke="#45A29E" stroke-width="6" stroke-opacity="0.4"/>
+                      <path d="M 250 100 L 400 400 L 320 400 L 250 250 L 180 400 L 100 400 Z" fill="#66FCF1"/>
+                      <circle cx="250" cy="250" r="30" fill="#1F2833"/>
+                      <circle cx="250" cy="250" r="15" fill="#66FCF1"/>
+                    </svg>
+                    <span class="logo">angetic_essence<span class="dim">//</span></span>
+                </a>
+                <p class="footer-tagline">Autonomous AI, Untethered.</p>
+            </div>
             <div class="footer-links">
                 <a href="docs/EULA.md">EULA</a>
-                <a href="mailto:laikaseriousjames@gmail.com">laikaseriousjames@gmail.com</a>
+                <a href="mailto:laikaseriousjames@gmail.com">Contact</a>
+                <a href="https://github.com/laikaseriousjames-barkdog/Angetic-Essence" target="_blank" rel="noopener">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    GitHub
+                </a>
             </div>
-            <span class="dim">&copy; 2026 Angetic Essence. All rights reserved.</span>
+            <span class="dim footer-copy">&copy; 2026 Angetic Essence. All rights reserved.</span>
         </div>
     </footer>
+
+    <script>
+    // Hamburger menu
+    function toggleMenu() {
+        document.getElementById('nav-menu').classList.toggle('open');
+    }
+    document.querySelectorAll('.nav-links a').forEach(a => {
+        a.addEventListener('click', () => document.getElementById('nav-menu').classList.remove('open'));
+    });
+
+    // Animated terminal fallback
+    const lines = [
+        { text: '[SYSTEM] Angetic Essence v1.0.0 booting...', color: '#94a3b8', delay: 0 },
+        { text: '[Turing]  Initializing recursive task queue engine...', color: '#06b6d4', delay: 600 },
+        { text: '[Knuth]   File system operations: READY', color: '#10b981', delay: 1200 },
+        { text: '[Lovelace] PyTest suite loaded. ADB bridge: CONNECTED', color: '#8b5cf6', delay: 1800 },
+        { text: '', delay: 2200 },
+        { text: '$ /api/vm/exec "nmap -sV -F 192.168.1.0/24"', color: '#f8fafc', delay: 2600 },
+        { text: '  → Triggering Kali WSL bridge...', color: '#94a3b8', delay: 3200 },
+        { text: '  → Discovered 12 hosts. 3 with open ports.', color: '#10b981', delay: 3800 },
+        { text: '', delay: 4200 },
+        { text: '$ /api/adb/devices', color: '#f8fafc', delay: 4600 },
+        { text: '  → Found device: [emulator-5554] online', color: '#10b981', delay: 5000 },
+        { text: '  → Pushing APK: agent_ui_test.apk...', color: '#94a3b8', delay: 5400 },
+        { text: '  → Install success. Running UI validation...', color: '#10b981', delay: 6000 },
+        { text: '', delay: 6400 },
+        { text: '$ /api/ast/patch --target agent_core.py', color: '#f8fafc', delay: 6800 },
+        { text: '  → Parsing AST tree: 2,847 nodes found', color: '#94a3b8', delay: 7400 },
+        { text: '  → Diff patch applied. 0 regressions.', color: '#10b981', delay: 8000 },
+        { text: '', delay: 8400 },
+        { text: '[Turing]  All agents nominal. Awaiting next directive.', color: '#06b6d4', delay: 8800 },
+        { text: '█', color: '#06b6d4', delay: 9400 },
+    ];
+
+    const terminal = document.getElementById('terminal');
+    if (terminal) {
+        lines.forEach(({ text, color, delay }) => {
+            setTimeout(() => {
+                const line = document.createElement('div');
+                line.className = 'terminal-line';
+                line.style.color = color || '#94a3b8';
+                line.textContent = text;
+                terminal.appendChild(line);
+                terminal.scrollTop = terminal.scrollHeight;
+            }, delay);
+        });
+    }
+
+    // Smooth active nav highlight on scroll
+    const sections = document.querySelectorAll('section[id], header[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(s => {
+            if (window.scrollY >= s.offsetTop - 120) current = s.id;
+        });
+        navLinks.forEach(a => {
+            a.classList.remove('active');
+            if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+        });
+    }, { passive: true });
+    </script>
 </body>
 </html>
