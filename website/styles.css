@@ -1,0 +1,509 @@
+/* ─── Reset & Base ─── */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #060913;
+    color: #e2e8f0;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Global Variables ─── */
+:root {
+    --bg: #060913;
+    --bg-card: #0d1222;
+    --bg-hover: #131b32;
+    --border: #1e293b;
+    --border-glow: rgba(6, 182, 212, 0.2);
+    --text: #f8fafc;
+    --text-dim: #94a3b8;
+    --accent: #06b6d4; /* Cyan */
+    --accent-alt: #10b981; /* Green */
+    --purple: #8b5cf6;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.accent { color: var(--accent); }
+.dim { color: var(--text-dim); }
+
+/* ─── Navigation ─── */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    background: rgba(6, 9, 19, 0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.2rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2.2rem;
+    align-items: center;
+}
+
+.nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: var(--accent);
+}
+
+.nav-cta {
+    background: rgba(6, 182, 212, 0.1);
+    color: var(--accent) !important;
+    padding: 0.5rem 1.3rem;
+    border-radius: 8px;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.nav-cta:hover {
+    background: rgba(6, 182, 212, 0.2);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+/* ─── Hero / Header ─── */
+.hero {
+    position: relative;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10rem 2rem 4rem;
+    overflow: hidden;
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 10% 40%, rgba(6, 182, 212, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    max-width: 900px;
+    text-align: center;
+    z-index: 10;
+}
+
+.badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--accent);
+    background: rgba(6, 182, 212, 0.08);
+    border: 1px solid rgba(6, 182, 212, 0.25);
+    padding: 0.4rem 1.1rem;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.hero h1 {
+    font-size: clamp(2.6rem, 5.5vw, 4.4rem);
+    margin-bottom: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+}
+
+.hero-sub {
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    color: var(--text-dim);
+    max-width: 720px;
+    margin: 0 auto 3rem;
+    line-height: 1.6;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ─── Buttons ─── */
+.btn-primary {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), var(--accent-alt));
+    color: #040815;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.95rem 2.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(6, 182, 212, 0.4);
+}
+
+.btn-secondary {
+    display: inline-block;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.95rem 2.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: rgba(30, 41, 59, 0.3);
+    backdrop-filter: blur(4px);
+    transition: all 0.25s ease;
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent);
+    background: var(--bg-hover);
+    transform: translateY(-2px);
+}
+
+/* ─── Demo Section & Hardware Screen ─── */
+.demo-section {
+    padding: 4rem 2rem 6rem;
+    background: linear-gradient(180deg, var(--bg) 0%, #03050a 100%);
+}
+
+.section-header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 3.5rem;
+}
+
+.section-header h2 {
+    font-size: clamp(2rem, 3.5vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.section-header p {
+    color: var(--text-dim);
+    margin-top: 1rem;
+    font-size: 1.1rem;
+}
+
+.hardware-frame {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #020205;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(6, 182, 212, 0.05);
+    overflow: hidden;
+}
+
+.screen-header {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1.2rem;
+    background: #0c101d;
+    border-bottom: 1px solid var(--border);
+}
+
+.window-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.window-controls .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: block;
+}
+
+.window-controls .dot.red { background: #ef4444; }
+.window-controls .dot.yellow { background: #f59e0b; }
+.window-controls .dot.green { background: #10b981; }
+
+.window-title {
+    margin-left: 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+}
+
+.screen-body {
+    position: relative;
+    padding: 0;
+    background: #030306;
+}
+
+.demo-video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: none;
+}
+
+.terminal-fallback {
+    padding: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: #00ff66;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: break-all;
+    background: #030306;
+}
+
+/* ─── Value Propositions ─── */
+.value-props {
+    padding: 6rem 2rem;
+    background: #03050a;
+}
+
+.props-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.prop-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2.5rem 2.2rem;
+    transition: all 0.3s ease;
+}
+
+.prop-card:hover {
+    border-color: var(--border-glow);
+    background: var(--bg-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(6, 182, 212, 0.05);
+}
+
+.prop-icon {
+    font-size: 2.2rem;
+    margin-bottom: 1.2rem;
+}
+
+.prop-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+}
+
+.prop-card p {
+    color: var(--text-dim);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.prop-card p strong {
+    color: var(--text);
+}
+
+/* ─── Pricing Section ─── */
+.pricing {
+    padding: 8rem 2rem;
+    background: linear-gradient(180deg, #03050a 0%, var(--bg) 100%);
+    border-top: 1px solid var(--border);
+}
+
+.pricing-grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 2.5rem;
+    align-items: stretch;
+}
+
+.pricing-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.pricing-card.featured {
+    border-color: var(--accent);
+    box-shadow: 0 15px 40px rgba(6, 182, 212, 0.1);
+    background: #0e162d;
+}
+
+.featured-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--accent), var(--accent-alt));
+    color: #040815;
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 0.35rem 1.5rem;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.pricing-card h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.price {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--text);
+    margin: 1rem 0 0.1rem;
+}
+
+.pricing-card.featured .price {
+    color: var(--accent);
+}
+
+.price-note {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-desc {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+}
+
+.pricing-card ul {
+    list-style: none;
+    margin-bottom: 3rem;
+}
+
+.pricing-card li {
+    padding: 0.65rem 0;
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: flex-start;
+}
+
+.pricing-card li::before {
+    content: "✓";
+    color: var(--accent-alt);
+    margin-right: 0.75rem;
+    font-weight: 900;
+}
+
+.pricing-card.featured li {
+    color: #e2e8f0;
+}
+
+.pricing-card.featured li strong {
+    color: var(--accent);
+}
+
+.pricing-card .btn-primary,
+.pricing-card .btn-secondary {
+    width: 100%;
+    text-align: center;
+    margin-top: auto;
+    font-size: 1.05rem;
+}
+
+/* ─── Footer ─── */
+footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+    background: #03050a;
+}
+
+.footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.footer-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--accent);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+    .nav-links a:not(.nav-cta) {
+        display: none;
+    }
+    .hero-actions {
+        flex-direction: column;
+    }
+    .hero-actions .btn-primary,
+    .hero-actions .btn-secondary {
+        width: 100%;
+        text-align: center;
+    }
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+    .pricing-card {
+        padding: 2.5rem 1.8rem;
+    }
+}

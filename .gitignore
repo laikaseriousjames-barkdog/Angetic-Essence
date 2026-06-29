@@ -3,3 +3,7 @@
 # Except for the README and gitignore
 !.gitignore
 !README.md
+!core/
+!website/
+!website/**
+website/downloads/
