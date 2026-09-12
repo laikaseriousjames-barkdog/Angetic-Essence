@@ -1,0 +1,687 @@
+/**
+ * Agentic Hologram — Spatial Holodeck Styles
+ * True Holographic Projection // No Chat Boxes // Floating 3D Spatial Tasks
+ */
+
+:root {
+    --bg-space: #04060b;
+    --neon-cyan: #00f0ff;
+    --neon-magenta: #ff007f;
+    --neon-gold: #ffb700;
+    --neon-emerald: #00ff88;
+    --neon-violet: #8b00ff;
+    
+    --active-glow: var(--neon-cyan);
+    --active-dim: rgba(0, 240, 255, 0.15);
+    --font-ui: 'Outfit', -apple-system, sans-serif;
+    --font-code: 'JetBrains Mono', monospace;
+}
+
+body.persona-swarm {
+    --active-glow: var(--neon-cyan);
+    --active-dim: rgba(0, 240, 255, 0.18);
+}
+body.persona-turing {
+    --active-glow: var(--neon-magenta);
+    --active-dim: rgba(255, 0, 127, 0.18);
+}
+body.persona-knuth {
+    --active-glow: var(--neon-gold);
+    --active-dim: rgba(255, 183, 0, 0.18);
+}
+body.persona-lovelace {
+    --active-glow: var(--neon-emerald);
+    --active-dim: rgba(0, 255, 136, 0.18);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--bg-space);
+    font-family: var(--font-ui);
+    color: #e2e8f0;
+}
+
+/* ================= 1. THE HOLOGRAPHIC CHAMBER ================= */
+#holo-chamber {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+    perspective: 1000px;
+}
+
+#holo-stage-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.projector-emitter-floor {
+    position: absolute;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) rotateX(72deg);
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.emitter-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1.5px solid var(--active-glow);
+    box-shadow: 0 0 15px var(--active-dim), inset 0 0 15px var(--active-dim);
+    transition: all 0.5s ease;
+}
+
+.emitter-ring.outer {
+    inset: 0;
+    border-width: 2px;
+    animation: spinClockwise 20s linear infinite;
+}
+
+.emitter-ring.mid {
+    inset: 40px;
+    border-style: dashed;
+    animation: spinCounterClockwise 14s linear infinite;
+}
+
+.emitter-ring.core {
+    inset: 95px;
+    background: radial-gradient(circle, var(--active-dim) 0%, transparent 70%);
+    box-shadow: 0 0 25px var(--active-glow);
+    animation: pulseRing 3s ease-in-out infinite;
+}
+
+.emitter-beam {
+    position: absolute;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    height: 60vh;
+    background: linear-gradient(180deg, transparent 0%, var(--active-dim) 80%, rgba(0,0,0,0) 100%);
+    clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes spinClockwise {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+@keyframes spinCounterClockwise {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+}
+@keyframes pulseRing {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.08); opacity: 1; }
+}
+
+/* ================= 2. TOP HEADER HUD ================= */
+.holo-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 20;
+    pointer-events: auto;
+}
+
+.holo-persona-indicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(11, 16, 26, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 30px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.persona-symbol {
+    font-size: 20px;
+    color: var(--active-glow);
+    text-shadow: 0 0 10px var(--active-glow);
+    animation: floatGently 3s ease-in-out infinite;
+}
+
+.persona-name {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #fff;
+}
+
+.persona-role {
+    display: block;
+    font-family: var(--font-code);
+    font-size: 9.5px;
+    letter-spacing: 1px;
+    color: var(--active-glow);
+}
+
+.holo-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nh-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(11, 16, 26, 0.65);
+    border: 1px solid rgba(0, 255, 136, 0.4);
+    padding: 7px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+}
+
+.nh-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #00ff88;
+    box-shadow: 0 0 8px #00ff88;
+}
+
+.nh-label {
+    font-family: var(--font-code);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: #00ff88;
+}
+
+.holo-icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(11, 16, 26, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #cbd5e0;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition: all 0.2s ease;
+}
+.holo-icon-btn:active {
+    transform: scale(0.92);
+    border-color: var(--active-glow);
+    color: #fff;
+}
+
+/* ================= 3. PERSONA SUMMON BAR ================= */
+.holo-summon-bar {
+    position: absolute;
+    top: 72px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    background: rgba(4, 6, 11, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 4px 6px;
+    border-radius: 24px;
+    backdrop-filter: blur(14px);
+    z-index: 20;
+}
+
+.summon-chip {
+    background: transparent;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 18px;
+    font-family: var(--font-code);
+    font-size: 11px;
+    font-weight: 700;
+    color: #718096;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.summon-chip .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    opacity: 0.5;
+}
+.summon-chip .dot.cyan { background: var(--neon-cyan); }
+.summon-chip .dot.magenta { background: var(--neon-magenta); }
+.summon-chip .dot.gold { background: var(--neon-gold); }
+.summon-chip .dot.emerald { background: var(--neon-emerald); }
+
+.summon-chip.active {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    box-shadow: 0 0 12px var(--active-dim);
+}
+.summon-chip.active .dot {
+    opacity: 1;
+    box-shadow: 0 0 8px currentColor;
+}
+
+/* ================= 4. SPATIAL FLOATING TASKS ("OUT OF THIN AIR") ================= */
+#spatial-task-viewport {
+    position: absolute;
+    top: 120px;
+    bottom: 220px;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    z-index: 10;
+    perspective: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 16px 24px;
+    gap: 16px;
+    overflow-y: auto;
+}
+
+.spatial-task-card {
+    pointer-events: auto;
+    width: 100%;
+    max-width: 420px;
+    background: rgba(8, 14, 26, 0.85);
+    border: 1px solid var(--active-glow);
+    border-radius: 14px;
+    padding: 14px 18px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px var(--active-dim);
+    transform-style: preserve-3d;
+    animation: holoSpawn3D 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    margin-bottom: 8px;
+}
+
+.spatial-task-card.dismissing {
+    animation: holoVaporize3D 0.4s ease forwards;
+}
+
+@keyframes holoSpawn3D {
+    0% {
+        opacity: 0;
+        transform: rotateY(-25deg) rotateX(15deg) translate3d(60px, -40px, -150px) scale(0.85);
+        filter: blur(10px) brightness(2.2);
+    }
+    100% {
+        opacity: 1;
+        transform: rotateY(-6deg) rotateX(2deg) translate3d(0, 0, 0) scale(1);
+        filter: blur(0) brightness(1);
+    }
+}
+
+@keyframes holoVaporize3D {
+    0% {
+        opacity: 1;
+        transform: rotateY(-6deg) translate3d(0, 0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: rotateY(30deg) translate3d(120px, -60px, -200px) scale(0.6);
+        filter: blur(16px) brightness(3);
+    }
+}
+
+.spatial-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+}
+
+.spatial-card-title {
+    font-family: var(--font-code);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--active-glow);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.spatial-close-btn {
+    background: transparent;
+    border: none;
+    color: #a0aec0;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+.spatial-close-btn:hover {
+    color: #ff007f;
+}
+
+.spatial-card-body {
+    font-family: var(--font-code);
+    font-size: 12px;
+    line-height: 1.5;
+    color: #e2e8f0;
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.spatial-card-body pre {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 8px;
+    overflow-x: auto;
+    color: #00f0ff;
+    font-size: 11px;
+}
+
+/* ================= 5. VOCAL TRANSCRIPT HUD ================= */
+.vocal-transcript-hud {
+    position: absolute;
+    bottom: 140px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 580px;
+    text-align: center;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.transcript-speaker {
+    font-family: var(--font-code);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--active-glow);
+    margin-bottom: 4px;
+    text-shadow: 0 0 10px var(--active-glow);
+}
+
+.transcript-body {
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.4;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 20px var(--active-dim);
+    transition: all 0.3s ease;
+}
+
+/* ================= 6. HOLOGRAPHIC VOICE CORE FOOTER ================= */
+.holo-voice-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 12px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 30;
+    background: linear-gradient(180deg, transparent 0%, rgba(4, 6, 11, 0.95) 45%, #04060b 100%);
+}
+
+.voice-equalizer-bars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    margin-bottom: 10px;
+}
+
+.voice-equalizer-bars .bar {
+    width: 3.5px;
+    height: 4px;
+    background: var(--active-glow);
+    border-radius: 2px;
+    box-shadow: 0 0 8px var(--active-glow);
+    transition: height 0.08s ease;
+}
+
+.voice-orb-container {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+
+.voice-orb-core {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--active-glow) 0%, rgba(11, 16, 26, 0.9) 70%);
+    border: 2px solid var(--active-glow);
+    box-shadow: 0 0 24px var(--active-glow), inset 0 0 15px rgba(255, 255, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.voice-orb-container:active .voice-orb-core {
+    transform: scale(0.9);
+}
+
+.voice-icon {
+    font-size: 24px;
+    color: #fff;
+    filter: drop-shadow(0 0 8px #fff);
+}
+
+.voice-orb-ripple {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1.5px solid var(--active-glow);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.voice-orb-container.listening .voice-orb-ripple {
+    animation: orbListeningRipple 1.6s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.voice-orb-container.speaking .voice-orb-core {
+    animation: orbSpeakingPulse 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes orbListeningRipple {
+    0% { transform: scale(0.9); opacity: 0.9; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes orbSpeakingPulse {
+    from { transform: scale(1); box-shadow: 0 0 20px var(--active-glow); }
+    to { transform: scale(1.14); box-shadow: 0 0 40px var(--active-glow); }
+}
+
+.voice-status-label {
+    position: absolute;
+    bottom: -18px;
+    font-family: var(--font-code);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--active-glow);
+    white-space: nowrap;
+}
+
+.voice-shortcuts {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    overflow-x: auto;
+    max-width: 100%;
+    padding: 0 10px 4px;
+}
+
+.quick-vocal-chip {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #cbd5e0;
+    font-family: var(--font-code);
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 16px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.quick-vocal-chip:active {
+    background: var(--active-dim);
+    border-color: var(--active-glow);
+    color: #fff;
+    transform: scale(0.95);
+}
+
+/* ================= 7. SETTINGS MODAL ================= */
+.holo-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.holo-modal-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.holo-modal-glass {
+    width: 90%;
+    max-width: 440px;
+    background: rgba(11, 16, 26, 0.95);
+    border: 1px solid var(--active-glow);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.8), 0 0 24px var(--active-dim);
+    transform: translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.holo-modal-backdrop.open .holo-modal-glass {
+    transform: translateY(0);
+}
+
+.modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.modal-title {
+    font-family: var(--font-code);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--active-glow);
+}
+.modal-close {
+    background: transparent;
+    border: none;
+    color: #a0aec0;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.modal-label {
+    display: block;
+    font-family: var(--font-code);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: #718096;
+    margin-bottom: 6px;
+}
+
+.modal-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #fff;
+    font-family: var(--font-code);
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+.modal-input:focus {
+    border-color: var(--active-glow);
+    outline: none;
+}
+
+.modal-action-btn {
+    background: var(--active-dim);
+    border: 1px solid var(--active-glow);
+    color: #fff;
+    font-family: var(--font-code);
+    font-weight: 700;
+    font-size: 12px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.modal-action-btn:active {
+    background: var(--active-glow);
+    color: #04060b;
+}
+
+.modal-hint {
+    font-size: 11px;
+    color: #718096;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.modal-bridge-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 12px;
+}

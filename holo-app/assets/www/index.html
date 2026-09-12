@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Agentic Hologram • Spatial Holodeck</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="persona-swarm">
+
+    <!-- 1. HOLOGRAPHIC 3D CANVAS & PROJECTION CHAMBER -->
+    <div id="holo-chamber">
+        <canvas id="holo-stage-canvas"></canvas>
+        <div class="projector-emitter-floor">
+            <div class="emitter-ring outer"></div>
+            <div class="emitter-ring mid"></div>
+            <div class="emitter-ring core"></div>
+            <div class="emitter-beam"></div>
+        </div>
+    </div>
+
+    <!-- 2. MINIMALIST TOP STATUS STRIP -->
+    <header class="holo-header">
+        <div class="holo-persona-indicator" id="personaIndicator">
+            <span class="persona-symbol" id="personaSymbol">✦</span>
+            <div class="persona-details">
+                <span class="persona-name" id="personaName">AGENTIC SWARM</span>
+                <span class="persona-role" id="personaRole">QUANTUM NEURAL CORE</span>
+            </div>
+        </div>
+
+        <div class="holo-header-controls">
+            <div class="nh-pill" id="nhPill" onclick="toggleBridgeInfo()">
+                <span class="nh-dot"></span>
+                <span class="nh-label">NH: ROOT</span>
+            </div>
+            <button class="holo-icon-btn" id="settingsBtn" onclick="openSettingsModal()" title="Holodeck Settings">⚙</button>
+        </div>
+    </header>
+
+    <!-- 3. PERSONA QUICK-SUMMON CHIPS (VOICE OR TAP) -->
+    <nav class="holo-summon-bar">
+        <button class="summon-chip active" data-persona="swarm" onclick="switchPersona('swarm')">
+            <span class="dot cyan"></span>SWARM
+        </button>
+        <button class="summon-chip" data-persona="turing" onclick="switchPersona('turing')">
+            <span class="dot magenta"></span>TURING
+        </button>
+        <button class="summon-chip" data-persona="knuth" onclick="switchPersona('knuth')">
+            <span class="dot gold"></span>KNUTH
+        </button>
+        <button class="summon-chip" data-persona="lovelace" onclick="switchPersona('lovelace')">
+            <span class="dot emerald"></span>LOVELACE
+        </button>
+    </nav>
+
+    <!-- 4. SPATIAL FLOATING TASKS LAYER (SPAWNED OUT OF THIN AIR) -->
+    <div id="spatial-task-viewport">
+        <!-- Floating task cards dynamically materialized here in 3D -->
+    </div>
+
+    <!-- 5. LIVE VOCAL SUBTITLE & AURA PROJECTION -->
+    <div class="vocal-transcript-hud" id="vocalHud">
+        <div class="transcript-speaker" id="transcriptSpeaker">OPERATOR</div>
+        <div class="transcript-body" id="transcriptText">Say "Hey Swarm", "Switch to Turing", "Scan Wi-Fi", or "Synthesize a tool"...</div>
+    </div>
+
+    <!-- 6. THE HOLOGRAPHIC VOICE CORE (VOICE-FIRST INTERACTION) -->
+    <footer class="holo-voice-footer">
+        <div class="voice-equalizer-bars" id="eqBars">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </div>
+
+        <div class="voice-orb-container" onclick="HoloVoice.toggleListening()">
+            <div class="voice-orb-ripple" id="orbRipple"></div>
+            <div class="voice-orb-core" id="orbCore">
+                <span class="voice-icon" id="voiceIcon">🎙</span>
+            </div>
+            <span class="voice-status-label" id="voiceStatusLabel">TAP OR SPEAK</span>
+        </div>
+
+        <div class="voice-shortcuts">
+            <button class="quick-vocal-chip" onclick="HoloVoice.injectCommand('wifi scan')">📡 Wi-Fi Scan</button>
+            <button class="quick-vocal-chip" onclick="HoloVoice.injectCommand('battery')">🔋 Battery</button>
+            <button class="quick-vocal-chip" onclick="HoloVoice.injectCommand('synthesize network monitor')">⚡ /synth HUD</button>
+            <button class="quick-vocal-chip" onclick="SpatialTasks.clearAll()">🧹 Dismiss Tasks</button>
+        </div>
+    </footer>
+
+    <!-- 7. TRANSLUCENT HOLOGRAPHIC SETTINGS MODAL -->
+    <div class="holo-modal-backdrop" id="settingsModal" onclick="closeSettingsModal(event)">
+        <div class="holo-modal-glass" onclick="event.stopPropagation()">
+            <div class="modal-head">
+                <div class="modal-title">HOLODECK CONFIGURATION</div>
+                <button class="modal-close" onclick="closeSettingsModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <label class="modal-label">INFERENCE ENGINE</label>
+                <select id="providerSelect" class="modal-input" onchange="onProviderChange()">
+                    <option value="gemini">Google Gemini 3.1 (Free)</option>
+                    <option value="groq">Groq LPU (Ultra-Fast)</option>
+                    <option value="ollama">Ollama Local Cyberdeck</option>
+                </select>
+
+                <label class="modal-label">GEMINI API KEY</label>
+                <div style="display:flex; gap:8px;">
+                    <input type="password" id="apiKeyInput" class="modal-input" placeholder="Paste Gemini Key (AQ...)" oninput="autoSaveApiKey(this.value)" />
+                    <button class="modal-action-btn" onclick="saveApiKeyDirect()">SAVE</button>
+                </div>
+                <span class="modal-hint">Key auto-saves to local storage.</span>
+
+                <label class="modal-label" style="margin-top:14px;">CONTINUOUS VOICE LISTENER</label>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <span style="font-size:13px; color:#a0aec0;">Always listening for voice turns</span>
+                    <input type="checkbox" id="continuousVoiceToggle" checked onchange="toggleContinuousVoice(this.checked)" style="accent-color:#00f0ff; width:18px; height:18px;" />
+                </div>
+
+                <label class="modal-label">KALI NETHUNTER ROOT BRIDGE</label>
+                <div class="modal-bridge-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span>DAEMON: 127.0.0.1:8765</span>
+                        <span id="bridgeStatusText" style="color:#00ff88; font-weight:700;">ONLINE</span>
+                    </div>
+                    <p style="font-size:11px; color:#718096; margin-bottom:8px;">Full root privileges in Termux / Kali NetHunter.</p>
+                    <button class="modal-action-btn" onclick="testNetHunterBridge()" style="width:100%;">🐉 Ping Bridge</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS: 3D Holographic Rendering, Voice Engine, Spatial Tasks, Brain -->
+    <script src="holo-renderer.js"></script>
+    <script src="spatial-tasks.js"></script>
+    <script src="voice-engine.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

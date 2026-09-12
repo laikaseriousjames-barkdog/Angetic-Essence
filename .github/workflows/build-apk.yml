@@ -31,26 +31,33 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y aapt zipalign apksigner python3-pytest
 
-      - name: Build and Sign APK
+      - name: Build and Sign APKs
         run: |
           sudo mkdir -p /root/android-sdk /root/Downloads
           sudo chmod -R 777 /root
           cp "$ANDROID_HOME/platforms/android-34/android.jar" /root/android-sdk/android.jar 2>/dev/null || cp "$ANDROID_HOME/platforms/"*/android.jar /root/android-sdk/android.jar
           find "$ANDROID_HOME/build-tools" -name "d8.jar" -o -name "r8.jar" | head -n 1 | xargs -I {} cp {} /root/android-sdk/r8.jar
-          chmod +x ./build_apk.sh
+          chmod +x ./build_apk.sh ./build_holo_apk.sh
           ./build_apk.sh
+          ./build_holo_apk.sh
 
       - name: Run Test Suite
         run: |
           pytest tests/
 
-      - name: Upload APK artifact
+      - name: Upload Cyberdeck APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: agentic-essence-android
           path: android-app/bin/AgenticEssence-Android.apk
 
-      - name: Publish APK to gh-pages downloads folder
+      - name: Upload Hologram APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentic-holo-android
+          path: holo-app/bin/AgenticHolo-Android.apk
+
+      - name: Publish APKs to gh-pages downloads folder
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -58,9 +65,10 @@ jobs:
           mkdir -p /tmp/gh-pages-repo/downloads
           cp android-app/bin/AgenticEssence-Android.apk /tmp/gh-pages-repo/downloads/AgenticEssence-Android.apk
           cp android-app/bin/AgenticEssence-Android.apk /tmp/gh-pages-repo/downloads/AngeticEssence-Android.apk
+          cp holo-app/bin/AgenticHolo-Android.apk /tmp/gh-pages-repo/downloads/AgenticHolo-Android.apk
           cd /tmp/gh-pages-repo
           git add downloads/
-          git commit -m "Auto-publish latest Agentic Essence Android APK build" || echo "no changes"
+          git commit -m "Auto-publish latest Agentic Essence & Hologram Android APK builds" || echo "no changes"
           git push
 
 
